@@ -1,0 +1,150 @@
+.elements {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 50px auto 70px;
+  row-gap: 20px;
+  column-gap: 18px;
+  max-width: 880px;
+}
+
+.template__element {
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #fff;
+  max-width: 282px;
+  max-height: 361px;
+  display: flex;
+  flex-direction: column;
+}
+
+.element__trash-icon {
+  position: absolute;
+  z-index: 2;
+
+  align-self: flex-end;
+  margin-top: 18px;
+  margin-right: 15px;
+}
+
+.element__trash-icon-hidden {
+  display: hidden;
+  position: absolute;
+  z-index: -100;
+}
+
+.element__trash-icon:hover {
+  opacity: 60%;
+  transition: 0.4s ease-in all;
+}
+
+.element__image-container {
+  z-index: 0;
+  width: 100%;
+  height: 282px;
+  padding: 0;
+  background-color: #000;
+}
+
+.element__image {
+  width: inherit;
+  height: inherit;
+  object-fit: cover;
+}
+
+.element__button {
+  z-index: 1;
+  align-items: center;
+  display: flex;
+  text-align: left;
+  margin: 25px 15px 31px 21px;
+  padding: 0;
+  justify-content: space-between;
+}
+
+.element__text {
+  color: black;
+  max-width: 220px;
+  max-height: 30px;
+  font-family: Inter;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 29px;
+  margin: 0;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.element__container {
+  flex-direction: column;
+  text-align: center;
+}
+
+.element__like-number {
+  color: black;
+}
+
+.element__like-button {
+  background-image: url(../images/vector/like-icon.svg);
+  width: 21px;
+  height: 19px;
+  margin: auto 0 auto auto;
+  cursor: pointer;
+}
+
+.element__like-button:hover {
+  opacity: 50%;
+  transition: 0.4s ease-in all;
+}
+
+.element__like-button-active {
+  background-image: url(../images/vector/like-icon-black.svg);
+  transition: 0.2s ease-in all;
+  width: 21px;
+  height: 19px;
+  opacity: 100%;
+}
+
+.element__title {
+  background-color: unset;
+  margin: 0;
+  padding: 0;
+  font-family: Inter;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  color: white;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .elements {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+    align-items: center;
+  }
+
+  .template__element {
+    width: 282px;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .elements {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    row-gap: 20px;
+    margin-top: 42px;
+  }
+
+  .template__element {
+    width: 282px;
+  }
+}

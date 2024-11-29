@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/static/css/main.41ab353d.css",
+    "main.js": "/static/js/main.776ddf9d.js",
+    "static/js/453.e5b97ecc.chunk.js": "/static/js/453.e5b97ecc.chunk.js",
+    "static/media/Inter-Black.ttf": "/static/media/Inter-Black.83d81b169bedf85385f2.ttf",
+    "static/media/Inter-SemiBold.ttf": "/static/media/Inter-SemiBold.6058d3da655fb35169c2.ttf",
+    "static/media/Inter-Regular.ttf": "/static/media/Inter-Regular.9ca9ba81e9dcaa12b3a1.ttf",
+    "static/media/header__logo.svg": "/static/media/header__logo.4e8e0a1d604782a0dff8e5b1a5441e4d.svg",
+    "static/media/like-icon.svg": "/static/media/like-icon.3826c074a1b94b101e38.svg",
+    "index.html": "/index.html",
+    "static/media/Trash-icon.svg": "/static/media/Trash-icon.c4956c32989e66228de8d03a901d4be3.svg",
+    "static/media/elements__edit-button.svg": "/static/media/elements__edit-button.f7653e11b1c3c859569d.svg",
+    "static/media/like-icon-black.svg": "/static/media/like-icon-black.226461bd64622361ffb2.svg",
+    "static/media/close-icon.svg": "/static/media/close-icon.0a2678e11f71ce96ede30ffa375143dd.svg",
+    "static/media/profile__Add-Button.svg": "/static/media/profile__Add-Button.6f41966c71dd7895857f.svg",
+    "static/media/profile__Edit-Button.svg": "/static/media/profile__Edit-Button.a1892ea72cb87c8fc3aa.svg",
+    "main.41ab353d.css.map": "/static/css/main.41ab353d.css.map",
+    "main.776ddf9d.js.map": "/static/js/main.776ddf9d.js.map",
+    "453.e5b97ecc.chunk.js.map": "/static/js/453.e5b97ecc.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.41ab353d.css",
+    "static/js/main.776ddf9d.js"
+  ]
+}

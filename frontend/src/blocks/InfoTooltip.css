@@ -1,0 +1,83 @@
+.infotooltip {
+  position: fixed;
+  top: 0px;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.infotooltip__background {
+  width: 430px;
+  height: 330px;
+  background-color: white;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #000;
+  border-radius: 10px;
+}
+
+.infotooltip__success {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+}
+
+.infotooltip__fail {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+}
+
+.infotooltip__text {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 29px;
+  text-align: center;
+  width: 358px;
+  margin: 0 auto;
+  margin-top: 32px;
+}
+
+.infotooltip__close-button {
+  position: absolute;
+  top: -40px;
+  right: -35px;
+}
+
+.infotooltip__close-button:hover {
+  opacity: 50%;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 320px) {
+  .infotooltip {
+    top: -130px;
+  }
+
+  .infotooltip__background {
+    width: 280px;
+    height: 308px;
+  }
+
+  .infotooltip__close-button {
+    position: absolute;
+    top: -60px;
+    left: 125px;
+  }
+
+  .infotooltip__text {
+    font-size: 20px;
+    line-height: 24px;
+    text-align: center;
+    width: 244px;
+  }
+}

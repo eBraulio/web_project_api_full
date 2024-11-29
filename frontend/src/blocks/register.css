@@ -1,0 +1,192 @@
+.register {
+  background-color: #000;
+  margin: auto;
+  height: 100vh;
+}
+
+.register__header {
+  display: flex;
+}
+
+.register__container-header {
+  border-bottom: 1px solid #545454;
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.register__logo {
+  margin-top: 45px;
+  margin-bottom: 41px;
+}
+
+.register__login {
+  margin: 0px;
+  margin-top: 45px;
+  margin-bottom: 41px;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.register__login:hover {
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.register__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register__form {
+  display: flex;
+  flex-direction: column;
+  width: 358px;
+}
+
+.register__title {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 29px;
+  text-align: center;
+
+  margin-top: 60px;
+  margin-bottom: 50px;
+}
+
+.register__label {
+}
+
+.register__input-email {
+  border: none;
+  background-color: black;
+  height: 25px;
+  border-bottom: 1px solid #cccccc;
+  padding-bottom: 5px;
+  margin-bottom: 30px;
+  color: #fff;
+}
+
+.register__input-email::placeholder {
+  color: #cccccc;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.register__input-password {
+  border: none;
+  background-color: black;
+  height: 25px;
+  border-bottom: 1px solid #cccccc;
+  padding-bottom: 5px;
+  margin-bottom: 216px;
+  color: #fff;
+}
+
+.register__input-password::placeholder {
+  color: #cccccc;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.register__button {
+  height: 50px;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+}
+
+.register__button:hover {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.register__footer {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+}
+
+.register__footer:hover {
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+@media screen and (max-width: 800px) {
+  .register__header {
+    padding: 0px;
+    margin: 0 auto;
+    max-width: 90%;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .register__header {
+    padding: 0px;
+    margin: 0 auto;
+    max-width: 100%;
+  }
+
+  .register__container-header {
+    max-width: 320px;
+  }
+
+  .register__logo {
+    height: 24px;
+    margin: 0px;
+    margin-top: 28px;
+    margin-bottom: 32px;
+    width: 126px;
+    padding-left: 30px;
+  }
+
+  .register__login {
+    margin: 0px;
+    margin-top: 28px;
+    padding-right: 30px;
+
+    font-size: 14px;
+    line-height: 17px;
+  }
+
+  .register__form {
+    width: 260px;
+  }
+
+  .register__input-password {
+    margin-bottom: 173px;
+  }
+
+  .register__title {
+    margin-top: 40px;
+    font-size: 20px;
+    line-height: 24px;
+    margin-bottom: 40px;
+  }
+
+  .register__footer {
+    font-size: 12px;
+    line-height: 15px;
+    margin-top: 20px;
+  }
+}
