@@ -14,8 +14,9 @@ dist
 .npm
 
 # production (will be copied directly to the server by deploy script)
-/build
 build
+/build
+
 
 # Archivos de sistema y carpetas de ajustes IDE
 .DS_Store
