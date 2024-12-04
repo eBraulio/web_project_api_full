@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import validator from 'validator';
+import bcrypt from 'bcryptjs';
 
 const { Schema } = mongoose;
 
@@ -11,12 +13,14 @@ const userSchema = new Schema({
     required: true,
     minlength: 2,
     maxlength: 30,
+    default: 'Jacques Cousteau MU', //url from project instructions
   },
   about: {
     type: String,
     required: true,
     minlength: 2,
     maxlength: 30,
+    default: 'Explorador MU', //url from project instructions
   },
   avatar: {
     type: String,
@@ -25,10 +29,46 @@ const userSchema = new Schema({
       validator: function (v) {
         return urlRegex.test(v);
       },
-      message: (props) => `${props.value} El URL no es valido`,
+      message: (props) => `${props.value} El URL no es valido MU`,
     },
+    default:
+      'https://practicum-content.s3.us-west-1.amazonaws.com/resources/moved_avatar_1604080799.jpg', //url from project instructions
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+    validate: validator.isEmail,
+    message: (props) => `${props.value} no es correo válido MU!`,
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 8,
+    select: false,
   },
 });
+
+userSchema.statics.findUserByCredentials = function findUserByCredentials(
+  email,
+  password
+) {
+  return this.findOne({ email })
+    .select('+password')
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new Error('Email o password incorrecto MU'));
+      }
+
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          return Promise.reject(new Error('Email o password incorrecto MU'));
+        }
+
+        return user;
+      });
+    });
+};
 
 const User = mongoose.model('user', userSchema);
 export default User;

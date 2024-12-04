@@ -2,6 +2,11 @@ import express from 'express';
 import userRoutes from './routes/users.js';
 import cardsRoutes from './routes/cards.js';
 import mongoose from 'mongoose';
+//import {} from 'dotenv/config';
+import dotenv from 'dotenv/config';
+// CORS
+//const cors = require('cors');
+import cors from 'cors';
 
 const app = express();
 mongoose
@@ -12,6 +17,10 @@ mongoose
   .catch((err) => {
     console.log('algo debió de salir mal', err);
   });
+
+//Habilitar CORS
+app.use(cors());
+app.options('*', cors());
 
 app.use(express.json());
 

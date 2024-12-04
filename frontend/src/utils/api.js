@@ -4,6 +4,16 @@ class Api {
     this.headers = options.headers;
   }
 
+  // constructor(options) {
+  //   this.baseUrl = options.baseUrl;
+  //   this.headers = {
+  //     Authorization: localStorage.getItem("jwt")
+  //       ? `Bearer ${localStorage.getItem("jwt")}`
+  //       : "",
+  //     "Content-Type": "application/json",
+  //   };
+  // }
+
   _makeRequest(endpoint, method = "GET", body = null) {
     const options = {
       method,
@@ -26,55 +36,15 @@ class Api {
   }
 
   getInitialCards() {
-    return fetch(`${this.baseUrl}/cards`, {
-      method: "GET",
-      headers: this.headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    return this._makeRequest("/cards");
   }
 
   getUserInfo() {
-    return fetch(`${this.baseUrl}/users/me`, {
-      method: "GET",
-      headers: this.headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    return this._makeRequest("/users/me");
   }
 
   editProfile(data) {
-    return fetch(`${this.baseUrl}/users/me`, {
-      method: "PATCH",
-      headers: this.headers,
-      body: JSON.stringify({
-        name: data.name,
-        about: data.about,
-      }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    return this._makeRequest("/users/me", "PATCH", data);
   }
 
   editAvatarProfile({ avatar }) {
@@ -82,79 +52,23 @@ class Api {
   }
 
   addCard(data) {
-    return fetch(`${this.baseUrl}/cards`, {
-      method: "POST",
-      headers: this.headers,
-      body: JSON.stringify({
-        name: data.name,
-        link: data.link,
-      }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    return this._makeRequest("/cards", "POST", data);
   }
 
   deleteCard(cardId) {
-    return fetch(`${this.baseUrl}/cards/${cardId}`, {
-      method: "DELETE",
-      headers: this.headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    return this._makeRequest(`/cards/${cardId}`, "DELETE");
   }
 
   addLike(cardId) {
-    return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
-      method: "PUT",
-      headers: this.headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    return this._makeRequest(`/cards/likes/${cardId}`, "PUT");
   }
 
   changeLikeCardStatus(cardId, isLiked) {
-    if (isLiked) {
-      return this.removeLike(cardId);
-    } else {
-      return this.addLike(cardId);
-    }
+    return isLiked ? this.removeLike(cardId) : this.addLike(cardId);
   }
 
   removeLike(cardId) {
-    return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
-      method: "DELETE",
-      headers: this.headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    return this._makeRequest(`/cards/likes/${cardId}`, "DELETE");
   }
 }
 
@@ -165,5 +79,13 @@ const api = new Api({
     "Content-Type": "application/json",
   },
 });
+
+// const api = new Api({
+//   baseUrl: "https://api.ebraulio.chickenkiller.com",
+//   headers: {
+//     authorization: "6bb9691a-4f67-46d0-9c5a-49bb45cb7185",
+//     "Content-Type": "application/json",
+//   },
+// });
 
 export default api;

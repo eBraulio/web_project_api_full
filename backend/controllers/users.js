@@ -1,4 +1,9 @@
 import User from '../models/user.js';
+import bcrypt from 'bcryptjs';
+//const { NODE_ENV, JWT_SECRET} = process.env;
+import {} from 'dotenv/config';
+const JWT_SECRET = 'Zxcvbn1212env';
+const JWT_EXPIRATION = '7d';
 
 export async function getUsers(req, res) {
   User.find({})
@@ -10,15 +15,74 @@ export async function getUsers(req, res) {
     );
 }
 
+export async function getUser(req, res) {
+  User.findById(req.params.userId)
+    .orFail(() => {
+      const error = new Error('User not found');
+      error.statusCode = 404;
+      throw error;
+    })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      const statusCode = err.statusCode || 500;
+      res
+        .status(statusCode)
+        .send({ message: 'Error finding User', error: err.message });
+    });
+}
+
+export async function getUserInfo(req, res) {
+  User.findById(req.user._id)
+    .orFail(() => {
+      const error = new Error('User not found');
+      error.statusCode = 404;
+      throw error;
+    })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      const statusCode = err.statusCode || 500;
+      res
+        .status(statusCode)
+        .send({ message: 'Error finding User', error: err.message });
+    });
+}
+
 export async function createUser(req, res) {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+  const { name, about, avatar, email, password } = req.body;
+
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => User.create({ name, about, avatar, email, password: hash }))
     .then((user) => res.status(201).json(user))
     .catch((err) =>
       res
         .status(500)
         .json({ message: 'Error al crear un User nuevo', error: err })
     );
+}
+
+export async function loginUser(req, res) {
+  const { email, password } = req.body;
+
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const payload = {
+        _id: user._id,
+      };
+
+      const token = jwt.sign(payload, JWT_SECRET, {
+        expiresIn: JWT_EXPIRATION,
+      });
+
+      return res.send({ token });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
+    });
 }
 
 export async function getUserById(req, res) {
