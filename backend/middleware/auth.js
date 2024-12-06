@@ -1,37 +1,26 @@
 const jwt = require('jsonwebtoken');
-//require('dotenv').config();
-import {} from 'dotenv/config';
-const { JWT_SECRET } = process.env;
+require('dotenv').config();
 
-const handleAuthError = (res, message = 'Authentication Error') => {
-  res.status(401).send({ message });
-};
-
-const extractBearerToken = (header) => {
-  return header.replace('Bearer ', '');
-};
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
-  if (!authorization || !authorization.startsWith('Bearer ')) {
-    return handleAuthError(res, 'Authorization token missing or malformed');
+  if (!authorization) {
+    return res.status(401).send({ message: 'Se requiere autorización' });
   }
 
-  const token = extractBearerToken(authorization);
-
+  const token = authorization.replace('Bearer ', '');
   let payload;
+
   try {
-    // Verificar y decodificar el token
-    payload = jwt.verify(token, JWT_SECRET);
+    const secretWord = NODE_ENV === 'production' ? JWT_SECRET : 'topSecret';
+    payload = jwt.verify(token, secretWord);
   } catch (err) {
-    console.log(err);
-    // Token inválido o expirado
-    return handleAuthError(res, 'Invalid or expired token');
+    return res.status(401).send({ message: 'Se requiere autorización' });
   }
 
-  req.user = req.user || {};
-  req.user._id = payload._id;
+  req.user = payload;
 
   next();
 };

@@ -28,9 +28,11 @@ function App() {
   const [currentEmail, setCurrentEmail] = React.useState("");
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const navigate = useNavigate();
-  const handleLogIn = () => {
-    setIsLoggedIn(true);
-  };
+
+  // const handleLogIn = () => {
+  //   setIsLoggedIn(true);
+  // };
+
   const handleLogOut = () => {
     setIsLoggedIn(false);
     localStorage.removeItem("jwt");
@@ -42,6 +44,7 @@ function App() {
   };
 
   useEffect(() => {
+    tokenCheck();
     getUserInfo();
     getCards();
   }, []);
@@ -103,24 +106,56 @@ function App() {
       closeAllPopups();
     });
   }
-  function handleTokenCheck() {
-    if (localStorage.getItem("jwt")) {
-      const token = localStorage.getItem("jwt");
+  // function handleTokenCheck() {
+  //   if (localStorage.getItem("jwt")) {
+  //     const token = localStorage.getItem("jwt");
 
-      auth.checkToken(token).then((res) => {
-        if (res) {
-          handleLogIn();
-          navigate("/");
-          setCurrentEmail(res);
-          console.log(currentEmail);
-        }
-      });
-    }
-  }
+  //     auth.checkToken(token).then((res) => {
+  //       if (res) {
+  //         handleLogIn();
+  //         navigate("/");
+  //         setCurrentEmail(res);
+  //         console.log(currentEmail);
+  //       }
+  //     });
+  //   }
+  // }
 
   React.useEffect(() => {
-    handleTokenCheck();
+    if (isLoggedIn) {
+      api.getUserInfo().then((user) => {
+        setCurrentUser(user);
+        api.getCards().then((cardsData) => {
+          setCards(cardsData);
+        });
+      });
+    }
+  }, [isLoggedIn]);
+
+  React.useEffect(() => {
+    tokenCheck();
   }, []);
+  const tokenCheck = () => {
+    const jwt = localStorage.getItem("jwt");
+
+    if (jwt) {
+      auth
+        .checkToken(jwt)
+        .then((res) => {
+          if (res) {
+            setIsLoggedIn(true);
+            //history.push("/home");
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+
+    return;
+  };
+  const handleLogIn = (evt) => {
+    evt.preventDefault();
+    tokenCheck();
+  };
 
   return (
     <div
@@ -141,6 +176,7 @@ function App() {
                   <Login
                     setCurrentEmail={setCurrentEmail}
                     handleLogIn={handleLogIn}
+                    setIsLoggedIn={setIsLoggedIn}
                   />
                 }
               />

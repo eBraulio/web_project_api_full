@@ -2,7 +2,8 @@ import React from "react";
 import headerLogo from "../images/vector/header__logo.svg";
 import * as auth from "../utils/auth.js";
 import { useNavigate } from "react-router-dom";
-function Login({ handleLogIn, setCurrentEmail }) {
+import api from "../utils/api.js";
+function Login({ setIsLoggedIn, handleLogIn, setCurrentEmail }) {
   const navigate = useNavigate();
 
   const [email, setEmail] = React.useState("");
@@ -17,22 +18,23 @@ function Login({ handleLogIn, setCurrentEmail }) {
     setPassword(e.target.value);
   }
 
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    if (!email || !password) {
+      return;
+    }
     auth
-      .authorize(password, email)
-      .then((data) => {
-        console.log(data);
-        if (data.token) {
-          setCurrentEmail(email);
-          setEmail("");
-          setPassword("");
-          handleLogIn();
-          navigate("/");
+      .login(email, password)
+      .then((res) => {
+        if (res.token) {
+          localStorage.setItem("jwt", res.token);
+          api.setToken(res.token);
+          setIsLoggedIn(true);
+          //history.push("/home");
         }
       })
-      .catch((err) => console.log(err));
-  }
+      .catch(console.log);
+  };
 
   function handleFooterText() {
     navigate("/signup");

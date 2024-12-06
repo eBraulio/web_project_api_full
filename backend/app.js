@@ -1,14 +1,32 @@
-import express from 'express';
-import userRoutes from './routes/users.js';
-import cardsRoutes from './routes/cards.js';
-import mongoose from 'mongoose';
-//import {} from 'dotenv/config';
-import dotenv from 'dotenv/config';
-// CORS
-//const cors = require('cors');
-import cors from 'cors';
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const { requestLogger, errorLogger } = require('./middleware/logger');
+const hasError = require('./middleware/hasError');
+//const { allowedOrigins } = require('./utils/const');
+const { errors } = require('celebrate');
 
 const app = express();
+
+//
+// const { NODE_ENV, JWT_SECRET } = process.env;
+// const token = jwt.sign(
+//   { _id: user._id },
+//   NODE_ENV === 'production' ? JWT_SECRET : 'topSecret'
+// );
+
+const allowedOrigins = [
+  'http://ebraulio.chickenkiller.com',
+  'http://www.ebraulio.chickenkiller.com',
+  'https://ebraulio.chickenkiller.com',
+  'https://www.ebraulio.chickenkiller.com',
+  'http://localhost:3000',
+  'https://localhost:3000',
+];
+//
+
+const { PORT = 3000 } = process.env;
 mongoose
   .connect('mongodb://localhost:27017/aroundb')
   .then(() => {
@@ -17,25 +35,29 @@ mongoose
   .catch((err) => {
     console.log('algo debió de salir mal', err);
   });
-
-//Habilitar CORS
 app.use(cors());
-app.options('*', cors());
+app.options('*', cors(allowedOrigins));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '66fc3eb18baf7a8ae72d5a66',
-  };
-  next();
+app.use(requestLogger);
+
+const userRoutes = require('./routes/users');
+const cardsRoutes = require('./routes/cards');
+app.use(userRoutes);
+app.use(cardsRoutes);
+
+app.all('*', (req, res) => {
+  res.status(404).send({ message: 'Recurso solicitado no encontrado' });
 });
-app.use('/users', userRoutes);
-app.use('/cards', cardsRoutes);
-app.use((req, res, next) => {
-  res.status(404).json({ message: 'Recurso solicitado no encontrado' });
-});
-const { PORT = 3000 } = process.env;
+
+app.use(errorLogger);
+
+app.use(errors());
+
+app.use(hasError);
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendoo en puerto ${PORT}`);
 });

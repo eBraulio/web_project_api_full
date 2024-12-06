@@ -1,24 +1,78 @@
-import express from 'express';
+const router = require('express').Router();
+const { celebrate, Joi, Segments } = require('celebrate');
+const validator = require('validator');
 
-import {
+const auth = require('../middleware/auth');
+
+const {
   getUsers,
+  getUser,
   createUser,
-  getUserById,
+  loginUser,
   updateUser,
   updateUserAvatar,
-  loginUser,
-  getUserInfo,
-} from '../controllers/users.js';
+} = require('../controllers/users');
 
-const router = express.Router();
+const validateURL = (value, helpers) => {
+  if (validator.isURL(value)) {
+    return value;
+  }
+  return helpers.error('string.uri');
+};
 
-router.get('/', getUsers);
-router.get('/:userId', getUserById);
-//router.post('/', createUser);
-router.post('/signin', loginUser);
-router.post('/signup', createUser);
-router.patch('/:userId', updateUser);
-router.patch('/:userId/avatar', updateUserAvatar);
-router.get('/users/me', getUserInfo); // para recibir información sobre el usuario actual segun instrucciones
+router.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('El servidor va a caer');
+  }, 0);
+});
 
-export default router;
+router.post(
+  '/signup',
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      email: Joi.string().required(),
+      password: Joi.string().required(),
+    }),
+  }),
+  createUser
+);
+
+router.post(
+  '/signin',
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      email: Joi.string().required(),
+      password: Joi.string().required(),
+    }),
+  }),
+  loginUser
+);
+
+router.use(auth);
+
+router.get('/users', getUsers);
+
+router.get('/users/me', getUser);
+
+router.patch(
+  '/users/me',
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      name: Joi.string().required(),
+      about: Joi.string().required(),
+    }),
+  }),
+  updateUser
+);
+
+router.patch(
+  '/users/me/avatar',
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      avatar: Joi.required().custom(validateURL),
+    }),
+  }),
+  updateUserAvatar
+);
+
+module.exports = router;

@@ -1,88 +1,65 @@
-import Card from '../models/card.js';
+const Card = require('../models/card');
+const handleError = require('../utils/HandleError');
 
-export async function getCards(req, res) {
-  Card.find({})
-    .then((cards) => res.json(cards))
-    .catch((res) =>
-      res
-        .status(500)
-        .send({ message: 'Error al obtener las CARDS', error: err.message })
-    );
-}
+const getCards = (req, res) => {
+  Card.find({}).then((cards) => {
+    res.send(cards);
+  });
+};
 
-export async function createCard(req, res, next) {
+const createCard = (req, res) => {
   const { name, link } = req.body;
-  const owner = req.user._id;
-  console.log(owner);
-  Card.create({ name, link, owner })
-    .then((card) => res.status(201).json(card))
-    .catch((err) =>
-      res
-        .status(500)
-        .send({ message: 'Error al crear una CARD', error: err.message })
-    );
-}
-
-export async function deleteCardById(req, res) {
-  Card.findByIdAndDelete(req.params.cardId)
+  Card.create({ name, link, owner: req.user._id })
     .then((card) => {
-      if (!card) {
-        return res.status(404).send({ message: 'La Card no fue encontrada' });
-      }
-      res.send({ message: 'La Card se borró correctamente' });
+      res.send(card);
     })
-    .catch((err) =>
-      res
-        .status(500)
-        .send({ message: 'Error al borrar la Card', error: err.message })
-    );
-}
+    .catch((error) => {
+      res.status(403).send(error);
+    });
+};
 
-export async function likeCard(req, res) {
+const deleteCardById = (req, res) => {
+  const cardId = req.params.cardId;
+  Card.findByIdAndDelete(cardId)
+    .orFail(() => {
+      const error = new Error('NOT_FOUND');
+      error.statusCode = 404;
+      throw error;
+    })
+    .then(() => {})
+    .catch(handleError);
+};
+
+const likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
-    .orFail(() => {
-      const error = new Error('La Card no fue encontrada');
-      error.statusCode = 404;
-      throw error;
-    })
+    .orFail()
     .then((card) => {
-      res
-        .status(200)
-        .json({ message: 'A la Card se le dió Like exitosamente' });
+      res.send(card);
     })
-    .catch((err) => {
-      const statusCode = err.statusCode || 400;
-      res
-        .status(statusCode)
-        .json({ message: 'Error al poner Like', error: err.message });
-    });
-}
+    .catch(handleError);
+};
 
-export async function dislikeCard(req, res) {
-  Card.findByIdAndUpdate(
+const dislikeCard = (req, res) => {
+  CardModel.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
     { new: true }
   )
-
-    .orFail(() => {
-      const error = new Error('La Card no fue encontrada');
-      error.statusCode = 404;
-      throw error;
-    })
+    .orFail()
     .then((card) => {
-      res
-        .status(200)
-        .json({ message: 'A la carta se le quitó Like exitosamente' });
+      res.send(card);
     })
-    .catch((err) => {
-      const statusCode = err.statusCode || 400;
-      res
-        .status(statusCode)
-        .json({ message: 'Error al quitar Like', error: err.message });
-    });
-}
+    .catch(handleError);
+};
+
+module.exports = {
+  getCards,
+  createCard,
+  deleteCardById,
+  likeCard,
+  dislikeCard,
+};
