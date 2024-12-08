@@ -6,6 +6,7 @@ class Api {
 
   setToken(token) {
     this._token = token;
+    console.log(token);
   }
 
   // _makeRequest(endpoint, method = "GET", body = null) {
@@ -142,6 +143,7 @@ class Api {
 //   },
 // });
 
+//const api = new Api("https://se-register-api.en.tripleten-services.com/v1/");
 const api = new Api("http://localhost:3000/");
 
 export default api;

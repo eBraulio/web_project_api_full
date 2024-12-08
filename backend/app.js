@@ -1,63 +1,69 @@
-require('dotenv').config();
+const { PORT = 3000 } = process.env;
 const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const { requestLogger, errorLogger } = require('./middleware/logger');
-const hasError = require('./middleware/hasError');
-//const { allowedOrigins } = require('./utils/const');
-const { errors } = require('celebrate');
-
 const app = express();
 
-//
-// const { NODE_ENV, JWT_SECRET } = process.env;
-// const token = jwt.sign(
-//   { _id: user._id },
-//   NODE_ENV === 'production' ? JWT_SECRET : 'topSecret'
-// );
+// MongoDB
+const mongoose = require('mongoose');
 
-const allowedOrigins = [
-  'http://ebraulio.chickenkiller.com',
-  'http://www.ebraulio.chickenkiller.com',
-  'https://ebraulio.chickenkiller.com',
-  'https://www.ebraulio.chickenkiller.com',
-  'http://localhost:3000',
-  'https://localhost:3000',
-];
-//
+// Importamos error para manejar los errores de celebrate
+const { errors } = require('celebrate');
 
-const { PORT = 3000 } = process.env;
+//Importamos nuestros loggers de errores y solicitudes
+const { requestLogger, errorLogger } = require('./middleware/logger');
+
+//Moongose a la database
 mongoose
   .connect('mongodb://localhost:27017/aroundb')
   .then(() => {
-    console.log('Conectado a la base de datos en MongoDB');
+    console.log('Conexión exitosa a aroundb');
   })
-  .catch((err) => {
-    console.log('algo debió de salir mal', err);
+  .catch((error) => {
+    console.error('Error conectando a MongoDB:', error);
   });
-app.use(cors());
-app.options('*', cors(allowedOrigins));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Aqui van los Routes
+const users = require('./routes/users');
+const cards = require('./routes/cards');
+const { error } = require('winston');
 
-app.use(requestLogger);
+// CORS
+const cors = require('cors');
 
-const userRoutes = require('./routes/users');
-const cardsRoutes = require('./routes/cards');
-app.use(userRoutes);
-app.use(cardsRoutes);
-
-app.all('*', (req, res) => {
-  res.status(404).send({ message: 'Recurso solicitado no encontrado' });
+//Pruebas de caida al servidor
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('El servidor va a caer');
+  }, 0);
 });
 
+//Habilitar CORS
+app.use(cors());
+app.options('*', cors());
+
+//Middleware para procesar solicitudes json
+app.use(express.json());
+
+//Conectamos el logger de solicitudes
+app.use(requestLogger);
+
+//Routes de tarjetas y usuarios
+
+app.use('/cards', cards);
+app.use('/', users);
+
+//Conectamos el logger de errores
 app.use(errorLogger);
 
+//Controlador de celebrate para errores
 app.use(errors());
 
-app.use(hasError);
+// middleware para error 404
+app.use((req, res, next) => {
+  res.status(403).json({
+    message: "You don't have access to this resource",
+  });
+});
 
 app.listen(PORT, () => {
-  console.log(`Servidor corriendoo en puerto ${PORT}`);
+  console.log(`The server is listening in the port http://localhost:${PORT}/`);
 });

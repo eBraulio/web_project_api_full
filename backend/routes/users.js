@@ -1,78 +1,86 @@
-const router = require('express').Router();
-const { celebrate, Joi, Segments } = require('celebrate');
-const validator = require('validator');
-
-const auth = require('../middleware/auth');
+const express = require('express');
+const users = express.Router();
 
 const {
   getUsers,
   getUser,
+  getUserInfo,
   createUser,
-  loginUser,
   updateUser,
-  updateUserAvatar,
+  updateAvatar,
+  loginUser,
 } = require('../controllers/users');
 
-const validateURL = (value, helpers) => {
-  if (validator.isURL(value)) {
-    return value;
-  }
-  return helpers.error('string.uri');
-};
+const auth = require('../middleware/auth');
 
-router.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('El servidor va a caer');
-  }, 0);
-});
+const { celebrate, Joi } = require('celebrate');
 
-router.post(
+//POST Para registrar un Usuario
+users.post(
   '/signup',
   celebrate({
-    [Segments.BODY]: Joi.object().keys({
-      email: Joi.string().required(),
-      password: Joi.string().required(),
+    body: Joi.object().keys({
+      name: Joi.string().optional(),
+      about: Joi.string().optional(),
+      avatar: Joi.string().optional(),
+      email: Joi.string().email().required(),
+      password: Joi.string().min(8).required(),
     }),
   }),
   createUser
 );
 
-router.post(
+//POST Para hacer login
+users.post(
   '/signin',
   celebrate({
-    [Segments.BODY]: Joi.object().keys({
-      email: Joi.string().required(),
+    body: Joi.object().keys({
+      email: Joi.string().email().required(),
       password: Joi.string().required(),
     }),
   }),
   loginUser
 );
 
-router.use(auth);
+//Middleware Auth
+users.use(auth);
 
-router.get('/users', getUsers);
+//GET Para obtener el json de los Usuarios
+users.get('/users', getUsers);
 
-router.get('/users/me', getUser);
+//GET Para obtener la información del usuario mediante el _id dentro de req.body(Cuerpo de la solicitud, generado por el middleware auth)
+users.get('/users/me', getUserInfo);
 
-router.patch(
+//GET Para obtener el json de un Usuario especifico
+users.get('/users/:userId', getUser);
+
+//PATCH Para actualizar un Usuarionp
+users.patch(
   '/users/me',
   celebrate({
-    [Segments.BODY]: Joi.object().keys({
-      name: Joi.string().required(),
-      about: Joi.string().required(),
+    body: Joi.object().keys({
+      name: Joi.string().min(2).max(30).required(),
+      about: Joi.string().min(2).max(100).required(),
     }),
   }),
   updateUser
 );
 
-router.patch(
+//PATCH Para actualizar el Avatar
+users.patch(
   '/users/me/avatar',
   celebrate({
-    [Segments.BODY]: Joi.object().keys({
-      avatar: Joi.required().custom(validateURL),
+    body: Joi.object().keys({
+      avatar: Joi.string().uri().required(),
     }),
   }),
-  updateUserAvatar
+  updateAvatar
 );
 
-module.exports = router;
+users.use((req, res, next) => {
+  res.status(403).json({
+    message: "You don't have access to this resource",
+  });
+});
+
+module.exports = users;

@@ -20,6 +20,8 @@ function Login({ setIsLoggedIn, handleLogIn, setCurrentEmail }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(email);
+    console.log(password);
     if (!email || !password) {
       return;
     }
@@ -35,6 +37,23 @@ function Login({ setIsLoggedIn, handleLogIn, setCurrentEmail }) {
       })
       .catch(console.log);
   };
+
+  // function handleSubmit(e) {
+  //   e.preventDefault();
+  //   auth
+  //     .login(password, email)
+  //     .then((data) => {
+  //       console.log(data);
+  //       if (data.token) {
+  //         setCurrentEmail(email);
+  //         setEmail("");
+  //         setPassword("");
+  //         handleLogIn();
+  //         navigate("/");
+  //       }
+  //     })
+  //     .catch((err) => console.log(err));
+  // }
 
   function handleFooterText() {
     navigate("/signup");

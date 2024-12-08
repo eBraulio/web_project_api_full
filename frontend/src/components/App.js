@@ -1,16 +1,16 @@
 import React from "react";
 import Header from "./Header";
-import { useState, useEffect } from "react";
 import Main from "./Main";
 import Footer from "./Footer";
 import ImagePopup from "./ImagePopup";
 import api from "../utils/api";
-import { CurrentUserContext } from "../context/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import Login from "./Login";
 import Register from "./Register";
+import { useState, useEffect } from "react";
+import { CurrentUserContext } from "../context/CurrentUserContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import * as auth from "../utils/auth.js";
@@ -42,12 +42,6 @@ function App() {
     console.log("Menu Mobile Funciona");
     setIsMenuOpen(!isMenuOpen);
   };
-
-  useEffect(() => {
-    tokenCheck();
-    getUserInfo();
-    getCards();
-  }, []);
 
   async function getCards() {
     const response = await api.getInitialCards();
@@ -106,20 +100,21 @@ function App() {
       closeAllPopups();
     });
   }
-  // function handleTokenCheck() {
-  //   if (localStorage.getItem("jwt")) {
-  //     const token = localStorage.getItem("jwt");
+  //handleTokenCheck
+  function tokenCheck() {
+    if (localStorage.getItem("jwt")) {
+      const token = localStorage.getItem("jwt");
 
-  //     auth.checkToken(token).then((res) => {
-  //       if (res) {
-  //         handleLogIn();
-  //         navigate("/");
-  //         setCurrentEmail(res);
-  //         console.log(currentEmail);
-  //       }
-  //     });
-  //   }
-  // }
+      auth.checkToken(token).then((res) => {
+        if (res) {
+          handleLogIn();
+          navigate("/");
+          setCurrentEmail(res);
+          console.log(currentEmail);
+        }
+      });
+    }
+  }
 
   React.useEffect(() => {
     if (isLoggedIn) {
@@ -135,27 +130,35 @@ function App() {
   React.useEffect(() => {
     tokenCheck();
   }, []);
-  const tokenCheck = () => {
-    const jwt = localStorage.getItem("jwt");
 
-    if (jwt) {
-      auth
-        .checkToken(jwt)
-        .then((res) => {
-          if (res) {
-            setIsLoggedIn(true);
-            //history.push("/home");
-          }
-        })
-        .catch((err) => console.log(err));
-    }
+  // const tokenCheck = () => {
+  //   const jwt = localStorage.getItem("jwt");
+  //   console.log(localStorage);
+  //   console.log(jwt);
+  //   if (jwt) {
+  //     auth
+  //       .checkToken(jwt)
+  //       .then((res) => {
+  //         if (res) {
+  //           setIsLoggedIn(true);
+  //           //history.push("/home");
+  //         }
+  //       })
+  //       .catch((err) => console.log(err));
+  //   }
 
-    return;
-  };
+  //   return;
+  // };
   const handleLogIn = (evt) => {
     evt.preventDefault();
     tokenCheck();
   };
+
+  // useEffect(() => {
+  //   tokenCheck();
+  //   getUserInfo();
+  //   getCards();
+  // }, []);
 
   return (
     <div
