@@ -1,16 +1,16 @@
 import React from "react";
 import Header from "./Header";
+import { useState, useEffect } from "react";
 import Main from "./Main";
 import Footer from "./Footer";
 import ImagePopup from "./ImagePopup";
 import api from "../utils/api";
+import { CurrentUserContext } from "../context/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import Login from "./Login";
 import Register from "./Register";
-import { useState, useEffect } from "react";
-import { CurrentUserContext } from "../context/CurrentUserContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import * as auth from "../utils/auth.js";
@@ -28,11 +28,9 @@ function App() {
   const [currentEmail, setCurrentEmail] = React.useState("");
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const navigate = useNavigate();
-
-  // const handleLogIn = () => {
-  //   setIsLoggedIn(true);
-  // };
-
+  const handleLogIn = () => {
+    setIsLoggedIn(true);
+  };
   const handleLogOut = () => {
     setIsLoggedIn(false);
     localStorage.removeItem("jwt");
@@ -42,6 +40,11 @@ function App() {
     console.log("Menu Mobile Funciona");
     setIsMenuOpen(!isMenuOpen);
   };
+
+  useEffect(() => {
+    getUserInfo();
+    getCards();
+  }, []);
 
   async function getCards() {
     const response = await api.getInitialCards();
@@ -100,8 +103,7 @@ function App() {
       closeAllPopups();
     });
   }
-  //handleTokenCheck
-  function tokenCheck() {
+  function handleTokenCheck() {
     if (localStorage.getItem("jwt")) {
       const token = localStorage.getItem("jwt");
 
@@ -117,48 +119,8 @@ function App() {
   }
 
   React.useEffect(() => {
-    if (isLoggedIn) {
-      api.getUserInfo().then((user) => {
-        setCurrentUser(user);
-        api.getCards().then((cardsData) => {
-          setCards(cardsData);
-        });
-      });
-    }
-  }, [isLoggedIn]);
-
-  React.useEffect(() => {
-    tokenCheck();
+    handleTokenCheck();
   }, []);
-
-  // const tokenCheck = () => {
-  //   const jwt = localStorage.getItem("jwt");
-  //   console.log(localStorage);
-  //   console.log(jwt);
-  //   if (jwt) {
-  //     auth
-  //       .checkToken(jwt)
-  //       .then((res) => {
-  //         if (res) {
-  //           setIsLoggedIn(true);
-  //           //history.push("/home");
-  //         }
-  //       })
-  //       .catch((err) => console.log(err));
-  //   }
-
-  //   return;
-  // };
-  const handleLogIn = (evt) => {
-    evt.preventDefault();
-    tokenCheck();
-  };
-
-  // useEffect(() => {
-  //   tokenCheck();
-  //   getUserInfo();
-  //   getCards();
-  // }, []);
 
   return (
     <div
@@ -179,7 +141,6 @@ function App() {
                   <Login
                     setCurrentEmail={setCurrentEmail}
                     handleLogIn={handleLogIn}
-                    setIsLoggedIn={setIsLoggedIn}
                   />
                 }
               />

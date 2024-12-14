@@ -2,8 +2,7 @@ import React from "react";
 import headerLogo from "../images/vector/header__logo.svg";
 import * as auth from "../utils/auth.js";
 import { useNavigate } from "react-router-dom";
-import api from "../utils/api.js";
-function Login({ setIsLoggedIn, handleLogIn, setCurrentEmail }) {
+function Login({ handleLogIn, setCurrentEmail }) {
   const navigate = useNavigate();
 
   const [email, setEmail] = React.useState("");
@@ -18,42 +17,22 @@ function Login({ setIsLoggedIn, handleLogIn, setCurrentEmail }) {
     setPassword(e.target.value);
   }
 
-  const handleSubmit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
-    console.log(email);
-    console.log(password);
-    if (!email || !password) {
-      return;
-    }
     auth
-      .login(email, password)
-      .then((res) => {
-        if (res.token) {
-          localStorage.setItem("jwt", res.token);
-          api.setToken(res.token);
-          setIsLoggedIn(true);
-          //history.push("/home");
+      .authorize(password, email)
+      .then((data) => {
+        console.log(data);
+        if (data.token) {
+          setCurrentEmail(email);
+          setEmail("");
+          setPassword("");
+          handleLogIn();
+          navigate("/");
         }
       })
-      .catch(console.log);
-  };
-
-  // function handleSubmit(e) {
-  //   e.preventDefault();
-  //   auth
-  //     .login(password, email)
-  //     .then((data) => {
-  //       console.log(data);
-  //       if (data.token) {
-  //         setCurrentEmail(email);
-  //         setEmail("");
-  //         setPassword("");
-  //         handleLogIn();
-  //         navigate("/");
-  //       }
-  //     })
-  //     .catch((err) => console.log(err));
-  // }
+      .catch((err) => console.log(err));
+  }
 
   function handleFooterText() {
     navigate("/signup");

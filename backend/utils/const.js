@@ -4,7 +4,7 @@ const login = require('../controllers/users');
 const { NODE_ENV, JWT_SECRET } = process.env;
 const token = jwt.login(
   { _id: user._id },
-  NODE_ENV === 'production' ? JWT_SECRET : 'loquesea'
+  NODE_ENV === 'production' ? JWT_SECRET : 'secretWord'
 );
 
 const allowedOrigins = [

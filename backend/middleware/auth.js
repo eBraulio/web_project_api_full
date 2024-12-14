@@ -1,6 +1,7 @@
+//const { JWT_SECRET } = process.env;
+
 const jwt = require('jsonwebtoken');
-const JWT_SECRET =
-  '3f6ae4482493d42415168086ea93ad191f7ff88a0204b18846ac0dac1e70e466';
+const JWT_SECRET = 'secretWord';
 
 const handleAuthError = (res, message = 'Authentication Error') => {
   res.status(401).send({ message });
@@ -14,7 +15,7 @@ module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return handleAuthError(res, 'Authorization token missing or malformed');
+    return handleAuthError(res, 'Authorization token missing');
   }
 
   const token = extractBearerToken(authorization);
