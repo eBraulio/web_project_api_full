@@ -29,6 +29,8 @@ module.exports = (req, res, next) => {
     // Token inválido o expirado
     return handleAuthError(res, 'Invalid or expired token');
   }
+  console.log(req.user);
+  console.log(payload._id);
 
   req.user = req.user || {};
   req.user._id = payload._id;

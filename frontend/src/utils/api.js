@@ -158,11 +158,18 @@ class Api {
   }
 }
 
+const token = localStorage.getItem("token");
+
 const api = new Api({
-  baseUrl: "https://around.nomoreparties.co/v1/web_es_11",
+  // baseUrl: "https://around.nomoreparties.co/v1/web_es_11/",
+  // headers: {
+  //   authorization: "6bb9691a-4f67-46d0-9c5a-49bb45cb7185",
+  //   "Content-Type": "application/json",
+  // },
+  baseUrl: "http://localhost:3000",
   headers: {
-    authorization: "6bb9691a-4f67-46d0-9c5a-49bb45cb7185",
     "Content-Type": "application/json",
+    authorization: `Bearer ${token}`,
   },
 });
 
