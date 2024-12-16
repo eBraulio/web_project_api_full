@@ -1,176 +1,148 @@
 class Api {
-  constructor(options) {
-    this.baseUrl = options.baseUrl;
-    this.headers = options.headers;
+  constructor({ token, address, groupId }) {
+    this._authorization = token;
+    this._address = address;
+    this._groupId = groupId;
   }
 
-  _makeRequest(endpoint, method = "GET", body = null) {
-    const options = {
-      method,
-      headers: { ...this.headers },
+  async _useFetch(url, method, body) {
+    const headers = {
+      "content-type": "application/json",
     };
 
-    if (body) {
-      options.headers["Content-Type"] = "application/json";
-      options.body = JSON.stringify(body);
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
-    return fetch(`${this.baseUrl}${endpoint}`, options)
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((error) => console.error("Error:", error));
+    const res = await fetch(url, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
+    if (res.ok) {
+      return res.json();
+    }
+
+    return Promise.reject(`Error ${res.status}`);
   }
 
-  getInitialCards() {
-    return fetch(`${this.baseUrl}/cards`, {
-      method: "GET",
-      headers: this.headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  getUserInfo() {
-    return fetch(`${this.baseUrl}/users/me`, {
-      method: "GET",
-      headers: this.headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  editProfile(data) {
-    return fetch(`${this.baseUrl}/users/me`, {
-      method: "PATCH",
-      headers: this.headers,
-      body: JSON.stringify({
-        name: data.name,
-        about: data.about,
-      }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  editAvatarProfile({ avatar }) {
-    return this._makeRequest(`/users/me/avatar`, "PATCH", { avatar });
-  }
-
-  addCard(data) {
-    return fetch(`${this.baseUrl}/cards`, {
-      method: "POST",
-      headers: this.headers,
-      body: JSON.stringify({
-        name: data.name,
-        link: data.link,
-      }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  deleteCard(cardId) {
-    return fetch(`${this.baseUrl}/cards/${cardId}`, {
-      method: "DELETE",
-      headers: this.headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  addLike(cardId) {
-    return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
-      method: "PUT",
-      headers: this.headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  changeLikeCardStatus(cardId, isLiked) {
-    if (isLiked) {
-      return this.removeLike(cardId);
-    } else {
-      return this.addLike(cardId);
+  async getUserInfoFronServer() {
+    try {
+      const res = await this._useFetch(`${this._address}/users/me`, "GET");
+      return res;
+    } catch (err) {
+      console.log(err);
     }
   }
 
-  removeLike(cardId) {
-    return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
-      method: "DELETE",
-      headers: this.headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .catch((err) => {
-        console.log(err);
+  //getCards
+  async getInitialCards() {
+    try {
+      const res = await this._useFetch(`${this._address}/cards`, "GET");
+      return res;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async saveDataToServer(name, description) {
+    try {
+      const res = await this._useFetch(`${this._address}/users/me`, "PATCH", {
+        name,
+        about: description,
       });
+      return res.data ? res.data : res;
+    } catch (err) {
+      console.log("Error al actualizar los datos del usuario:", err);
+    }
+  }
+
+  async addNewCardToServer({ name, link }) {
+    try {
+      const res = await this._useFetch(`${this._address}/cards`, "POST", {
+        name: name,
+        link: link,
+      });
+      return res;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async showLikeFromCard(cardId) {
+    try {
+      const res = await this._useFetch(
+        `${this._address}/cards/likes/${cardId}`,
+        "PUT"
+      );
+
+      return res;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async deleteLikeFromCard(cardId) {
+    try {
+      const res = await this._useFetch(
+        `${this._address}/cards/likes/${cardId}`,
+        "DELETE"
+      );
+
+      return res;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async deleteCardFromServer(cardId) {
+    try {
+      const res = await this._useFetch(
+        `${this._address}/cards/${cardId}`,
+        "DELETE"
+      );
+
+      return res;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async updateImageProfile(avatarUrl) {
+    try {
+      const res = await this._useFetch(
+        `${this._address}/users/me/avatar`,
+        "PATCH",
+        {
+          avatar: avatarUrl,
+        }
+      );
+
+      return res.data ? res.data : res;
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
 
-const token = localStorage.getItem("token");
-
 const api = new Api({
-  // baseUrl: "https://around.nomoreparties.co/v1/web_es_11/",
-  // headers: {
-  //   authorization: "6bb9691a-4f67-46d0-9c5a-49bb45cb7185",
-  //   "Content-Type": "application/json",
-  // },
-  baseUrl: "http://localhost:3000",
-  headers: {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  },
+  address: "http://localhost:3000",
+  token: localStorage.getItem("jwt") || process.env.TOKEN || "",
 });
+
+// const api = new Api({
+//   baseUrl: "https://around.nomoreparties.co/v1/web_es_11/",
+//   headers: {
+//     authorization: "6bb9691a-4f67-46d0-9c5a-49bb45cb7185",
+//     "Content-Type": "application/json",
+//   },
+//   // baseUrl: "http://localhost:3000",
+//   // headers: {
+//   //   "Content-Type": "application/json",
+//   //   authorization: `Bearer ${token}`,
+//   // },
+// });
 
 export default api;

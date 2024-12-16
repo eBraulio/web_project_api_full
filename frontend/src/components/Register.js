@@ -1,49 +1,68 @@
 import React from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import headerLogo from "../images/vector/header__logo.svg";
 import * as auth from "../utils/auth.js";
 import InfoTooltip from "./InfoTooltip.js";
+import escapeHTML from "escape-html";
 function Register() {
   const navigate = useNavigate();
-
-  const [email, setEmail] = React.useState("");
-
-  const [password, setPassword] = React.useState("");
 
   const [isSuccess, setIsSuccess] = React.useState(false);
 
   const [isFail, setIsFail] = React.useState(false);
+  //
 
-  function handleInfoTooltipClose() {
-    setIsFail(false);
-    setIsSuccess(false);
-  }
+  const [error, setError] = useState("");
 
-  function handleChangeEmail(e) {
-    setEmail(e.target.value);
-  }
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+  });
+  //
 
-  function handleChangePassword(e) {
-    setPassword(e.target.value);
-  }
-
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    auth.register(password, email).then((res) => {
-      if (!res || res.error) {
+    setError("");
+    setIsFail(false);
+
+    const sanitizedValues = {
+      email: escapeHTML(values.email),
+      password: escapeHTML(values.password),
+    };
+
+    auth
+      .register(sanitizedValues)
+      .then(() => {
+        navigate("/signin");
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.includes("usuario ya está registrado")) {
+          setError(
+            "Este usuario ya está registrado. Por favor, intenta con otro correo."
+          );
+        } else if (err.includes("400")) {
+          setError("Uno de los campos se rellenó de forma incorrecta.");
+        } else {
+          setError("Ha ocurrido un error. Por favor, inténtalo de nuevo.");
+        }
         setIsFail(true);
-      } else {
         setIsSuccess(true);
-        setTimeout(() => {
-          navigate("/signin");
-        }, 10000);
-      }
-    });
-  }
+      });
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setValues({ ...values, [name]: value });
+  };
 
   function handleFooterText() {
     navigate("/signin");
   }
+  const handleCloseTooltip = () => {
+    setIsSuccess(false);
+  };
 
   return (
     <div className="register">
@@ -66,9 +85,9 @@ function Register() {
             placeholder="Correo electrónico"
             required
             type="email"
-            value={email}
+            value={values.email}
             name="email"
-            onChange={handleChangeEmail}
+            onChange={handleChange}
           />
 
           <label className="register__label" htmlFor="password"></label>
@@ -79,9 +98,9 @@ function Register() {
             required
             minlength="8"
             type="password"
-            value={password}
+            value={values.password}
             name="password"
-            onChange={handleChangePassword}
+            onChange={handleChange}
           />
 
           <button className="register__button" type="submit">
@@ -96,9 +115,13 @@ function Register() {
       </div>
 
       <InfoTooltip
-        isFail={isFail}
-        isSuccess={isSuccess}
-        onClose={handleInfoTooltipClose}
+        // isFail={isFail}
+        // isSuccess={isSuccess}
+        // onClose={handleInfoTooltipClose}
+        isOpen={isSuccess}
+        onClose={handleCloseTooltip}
+        isError={isFail}
+        message={error}
       />
     </div>
   );

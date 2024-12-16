@@ -1,144 +1,64 @@
-//const { NODE_ENV, JWT_SECRET } = process.env;
+const User = require('../models/user');
+const { HttpStatus, HttpResponseMessage } = require('../enums/http');
 
-const user = require('../models/user');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-
-const JWT_SECRET = 'secretWord';
-
-const JWT_EXPIRATION = '7d';
-
-module.exports.getUsers = (req, res) => {
-  user
-    .find({})
-    .then((users) => res.json(users))
-    .catch((err) =>
-      res
-        .status(500)
-        .send({ message: 'Error getting Users', error: err.message })
-    );
+module.exports.getUsers = (req, res, next) => {
+  User.find({})
+    .then((user) => res.send({ data: user }))
+    .catch(next);
 };
 
-module.exports.getUser = (req, res) => {
-  user
-    .findById(req.params.userId)
+module.exports.getUserById = (req, res, next) => {
+  User.findById(req.params.id)
     .orFail(() => {
-      const error = new Error('User not found');
-      error.statusCode = 404;
+      const error = new Error(HttpResponseMessage.NOT_FOUND);
+      error.statusCode = HttpStatus.NOT_FOUND;
       throw error;
     })
-    .then((user) => {
-      res.json(user);
-    })
-    .catch((err) => {
-      const statusCode = err.statusCode || 500;
-      res
-        .status(statusCode)
-        .send({ message: 'Error finding User', error: err.message });
-    });
+    .then((user) => res.send({ data: user }))
+    .catch(next);
 };
 
-module.exports.getUserInfo = (req, res) => {
-  user
-    .findById(req.user._id)
-    .orFail(() => {
-      const error = new Error('User not found');
-      error.statusCode = 404;
-      throw error;
-    })
-    .then((user) => {
-      res.json(user);
-    })
-    .catch((err) => {
-      const statusCode = err.statusCode || 500;
-      res
-        .status(statusCode)
-        .send({ message: 'Error finding User', error: err.message });
-    });
-};
-
-module.exports.createUser = (req, res) => {
-  const { name, about, avatar, email, password } = req.body;
-
-  bcrypt
-    .hash(password, 10)
-    .then((hash) =>
-      user.create({
-        name,
-        about,
-        avatar,
-        email,
-        password: hash,
-      })
-    )
-    .then((user) => res.status(201).json(user))
-    .catch((err) => {
-      if (err.code === 11000) {
-        return res.status(409).send({ message: 'Email already exists' });
-      }
-      res
-        .status(400)
-        .send({ message: 'Error creating User', error: err.message });
-    });
-};
-
-module.exports.loginUser = (req, res) => {
-  const { email, password } = req.body;
-
-  user
-    .findUserByCredentials(email, password)
-    .then((user) => {
-      const payload = {
-        _id: user._id,
-      };
-
-      const token = jwt.sign(payload, JWT_SECRET, {
-        expiresIn: JWT_EXPIRATION,
-      });
-
-      return res.send({ token });
-    })
-    .catch((err) => {
-      res.status(401).send({ message: err.message });
-    });
-};
-
-module.exports.updateUser = (req, res) => {
+module.exports.updateUserProfile = (req, res, next) => {
   const { name, about } = req.body;
-  user
-    .findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+  const userId = req.user._id;
+
+  User.findByIdAndUpdate(
+    userId,
+    { name, about },
+    { new: true, runValidators: true }
+  )
     .orFail(() => {
-      const error = new Error('User not found');
-      error.statusCode = 404;
+      const error = new Error(HttpResponseMessage.NOT_FOUND);
+      error.statusCode = HttpStatus.NOT_FOUND;
       throw error;
     })
-    .then((user) => {
-      res.status(200).json(user);
-    })
-    .catch((err) => {
-      const statusCode = err.statusCode || 400;
-      res
-        .status(statusCode)
-        .json({ message: 'Error updating User', error: err.message });
-    });
+    .then((user) => res.send({ data: user }))
+    .catch(next);
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  user
-    .findByIdAndUpdate(req.user._id, { avatar }, { new: true })
+  const userId = req.user._id;
+
+  User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
     .orFail(() => {
-      const error = new Error('User not found');
-      error.statusCode = 404;
+      const error = new Error(HttpResponseMessage.NOT_FOUND);
+      error.statusCode = HttpStatus.NOT_FOUND;
       throw error;
     })
-    .then((user) => {
-      res.status(200).json(user);
+    .then((user) => res.send({ data: user }))
+    .catch(next);
+};
+
+module.exports.getCurrentUser = (req, res, next) => {
+  const userId = req.user._id;
+
+  User.findById(userId)
+    .orFail(() => {
+      const error = new Error(HttpResponseMessage.NOT_FOUND);
+      error.statusCode = HttpStatus.NOT_FOUND;
+      throw error;
     })
-    .catch((err) => {
-      const statusCode = err.statusCode || 400;
-      res
-        .status(statusCode)
-        .json({ message: 'Error updating Avatar', error: err.message });
-    });
+    .then((user) => res.send({ data: user }))
+    .catch(next);
 };

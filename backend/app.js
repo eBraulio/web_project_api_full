@@ -1,69 +1,51 @@
-const { PORT = 3000 } = process.env;
 const express = require('express');
-const app = express();
-
-// MongoDB
+require('dotenv').config();
 const mongoose = require('mongoose');
-
-// Importamos error para manejar los errores de celebrate
+const cors = require('cors');
 const { errors } = require('celebrate');
 
-//Importamos nuestros loggers de errores y solicitudes
+const { PORT = 3000 } = process.env;
+const errorHandler = require('./middleware/errorHandler');
+const { HttpStatus, HttpResponseMessage } = require('./enums/http');
+const usersRouter = require('./routes/users');
+const cardsRouter = require('./routes/cards');
+const authRouter = require('./routes/auth');
+const auth = require('./middleware/auth');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
-//Moongose a la database
-mongoose
-  .connect('mongodb://localhost:27017/aroundb')
-  .then(() => {
-    console.log('Conexión exitosa a aroundb');
-  })
-  .catch((error) => {
-    console.error('Error conectando a MongoDB:', error);
-  });
+// conección a MongoDB
+mongoose.connect('mongodb://localhost:27017/aroundb', {});
 
-// Aqui van los Routes
-const users = require('./routes/users');
-const cards = require('./routes/cards');
-const { error } = require('winston');
+const app = express();
+console.log(process.env.NODE_ENV); // producción
 
-// CORS
-const cors = require('cors');
-
-//Pruebas de caida al servidor
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('El servidor va a caer');
-  }, 0);
-});
-
-//Habilitar CORS
+// Middleware
+//app.use(cors({ origin: 'https://p18.ignorelist.com' }));
+//app.options('*',cors());
 app.use(cors());
-app.options('*', cors());
-
-//Middleware para procesar solicitudes json
 app.use(express.json());
-
-//Conectamos el logger de solicitudes
+//registrador de solicitudes
 app.use(requestLogger);
 
-//Routes de tarjetas y usuarios
+app.use('/auth', authRouter);
 
-app.use('/cards', cards);
-app.use('/', users);
+//controladores de rutas
+app.use('/users', auth, usersRouter);
+app.use('/cards', auth, cardsRouter);
 
-//Conectamos el logger de errores
+//resgistrador de errores
 app.use(errorLogger);
 
-//Controlador de celebrate para errores
-app.use(errors());
-
-// middleware para error 404
-app.use((req, res, next) => {
-  res.status(403).json({
-    message: "You don't have access to this resource",
-  });
+app.use((req, res) => {
+  res
+    .status(HttpStatus.NOT_FOUND)
+    .json({ message: HttpResponseMessage.NOT_FOUND });
 });
 
-app.listen(PORT, () => {
-  console.log(`The server is listening in the port http://localhost:${PORT}/`);
+app.use(errors());
+app.use(errorHandler);
+
+//Inicializar el servidor
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`App listening at port ${PORT}`);
 });

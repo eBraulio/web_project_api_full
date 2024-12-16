@@ -1,39 +1,35 @@
-//const { JWT_SECRET } = process.env;
-
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'secretWord';
+const { HttpStatus, HttpResponseMessage } = require('../enums/http');
 
-const handleAuthError = (res, message = 'Authentication Error') => {
-  res.status(401).send({ message });
-};
-
-const extractBearerToken = (header) => {
-  return header.replace('Bearer ', '');
-};
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
-  const { authorization } = req.headers;
+  //Obtener el token de los encabezados de la solicitud
+  const token = req.headers.authorization
+    ? req.headers.authorization.replace('Bearer ', '')
+    : null;
 
-  if (!authorization || !authorization.startsWith('Bearer ')) {
-    return handleAuthError(res, 'Authorization token missing');
+  if (!token) {
+    return res
+      .status(HttpStatus.FORBIDDEN)
+      .send({ message: HttpResponseMessage.FORBIDDEN });
   }
-
-  const token = extractBearerToken(authorization);
 
   let payload;
+
   try {
-    // Verificar y decodificar el token
-    payload = jwt.verify(token, JWT_SECRET);
+    //Verificar el token usando el JWT secreto
+    payload = jwt.verify(
+      token,
+      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret'
+    );
   } catch (err) {
-    console.log(err);
-    // Token inválido o expirado
-    return handleAuthError(res, 'Invalid or expired token');
+    return res
+      .status(HttpStatus.FORBIDDEN)
+      .send({ message: HttpResponseMessage.FORBIDDEN });
   }
-  console.log(req.user);
-  console.log(payload._id);
-
-  req.user = req.user || {};
-  req.user._id = payload._id;
-
-  next();
+  // Añadir el payload del token verificado al objeto de solicitud
+  req.user = payload;
+  //Continuar al siguiente middleware
+  return next();
 };

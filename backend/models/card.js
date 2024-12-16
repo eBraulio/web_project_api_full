@@ -1,43 +1,38 @@
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose;
-
-const urlRegex =
-  /^(https?:\/\/)(www\.)?([a-zA-Z0-9._~:/?%#[\]@!$&'()*+,;=-]+)$/;
-
-const cardSchema = new Schema(
-  {
-    name: {
-      required: true,
-      minlength: 2,
-      maxlength: 30,
-      type: String,
-    },
-    link: {
-      type: String,
-      required: true,
-      validate: {
-        validator: function (v) {
-          return urlRegex.test(v);
-        },
-        message: (props) => `${props.value} El URL no es valido`,
+const cardSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    minlength: 2,
+    maxlength: 30,
+    required: true,
+  },
+  link: {
+    type: String,
+    required: true,
+    validate: {
+      validator(v) {
+        const urlRegex =
+          /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]*)?$/;
+        return urlRegex.test(v);
       },
-    },
-    owner: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
-      required: true,
-    },
-    likes: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: 'user',
-      default: [],
+      message: (props) => `${props.value} no es una URL válida!`,
     },
   },
-  { timestamps: true }
-);
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+    required: true,
+  },
+  likes: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'user',
+    default: [],
+  },
+  createAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
 module.exports = mongoose.model('card', cardSchema);
-
-// const Card = mongoose.model('card', cardSchema);
-// export default Card;

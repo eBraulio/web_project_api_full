@@ -1,38 +1,40 @@
 import { useContext } from "react";
 import React from "react";
 import trashIcon from "../images/vector/Trash-icon.svg";
-import { CurrentUserContext } from "../context/CurrentUserContext";
+import CurrentUserContext from "../context/CurrentUserContext";
 
 export default function Card({
-  _id,
-  likes,
-  link,
-  name,
-  onCardClick,
   card,
   onCardLike,
   onCardDelete,
+  handleCardClick,
 }) {
   const currentUser = useContext(CurrentUserContext);
-  function handleClick() {
-    onCardClick(card);
+  const { name, link, _id, likes = [], owner } = card;
+
+  function handleImageClick() {
+    handleCardClick(card);
   }
-  const isOwn = card.owner._id === currentUser._id;
+
+  const isOwn = owner && currentUser ? owner._id === currentUser._id : false;
+
   const cardDeleteButtonClassName = ` ${
     isOwn ? "element__trash-icon" : "element__trash-icon-hidden"
+    //isOwn ? "element__trash-icon-hidden" : "element__trash-icon"
   }`;
-  const isLiked = card.likes.some((i) => i._id === currentUser._id);
+  const isLiked = likes.some((like) => like === currentUser._id);
+
   const cardLikeButtonClassName = ` ${
     isLiked ? "element__like-button-active" : "element__like-button"
   }`;
 
-  function handleLike() {
-    onCardLike(card);
-  }
+  const handleLikeClick = () => {
+    onCardLike(_id, isLiked);
+  };
 
-  function handleDelete() {
+  const handleDeleteClick = () => {
     onCardDelete(card);
-  }
+  };
 
   return (
     <div className="template__element" key={_id}>
@@ -40,20 +42,26 @@ export default function Card({
         src={trashIcon}
         alt="Icono de Eliminar foto"
         className={cardDeleteButtonClassName}
-        onClick={handleDelete}
+        onClick={handleDeleteClick}
       />
       <div className="element__image-container">
         <img
           src={link || ""}
           alt={name || ""}
           className="element__image"
-          onClick={handleClick}
+          onClick={handleImageClick}
         />
       </div>
       <div className="element__button">
         <h2 className="element__text">{name}</h2>
         <div className="element__container">
-          <div className={cardLikeButtonClassName} onClick={handleLike}></div>
+          <div
+            className={cardLikeButtonClassName}
+            // className={`${
+            //   isLiked ? "element__like-button-active" : "element__like-button"
+            // }`}
+            onClick={handleLikeClick}
+          ></div>
           <span className="element__like-number">{likes.length}</span>
         </div>
       </div>
