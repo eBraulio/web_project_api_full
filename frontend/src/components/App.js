@@ -11,10 +11,9 @@ import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import Login from "./Login";
 import Register from "./Register";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import * as auth from "../utils/auth.js";
-//import { CurrentUserEmailContext } from "../context/CurrentUserEmailContext.js";
 
 function App() {
   const [cards, setCards] = useState([]);
@@ -29,18 +28,6 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [token, setToken] = React.useState(localStorage.getItem("jwt") || "");
   const navigate = useNavigate();
-  const handleLogIn = () => {
-    setIsLoggedIn(true);
-  };
-  const handleLogOut = () => {
-    setIsLoggedIn(false);
-    localStorage.removeItem("jwt");
-    navigate("/signin");
-  };
-  const handleMenuButtonClick = () => {
-    console.log("Menu Mobile Funciona");
-    setIsMenuOpen(!isMenuOpen);
-  };
 
   //use effect
 
@@ -48,7 +35,7 @@ function App() {
     const HandleTokenCheck = () => {
       const jwt = localStorage.getItem("jwt");
       if (jwt) {
-        console.log("navegando a profile");
+        console.log("Renderizando profile");
 
         auth.checkToken(jwt).then((res) => {
           if (res) {
@@ -69,8 +56,8 @@ function App() {
 
         const cardInfo = await api.getInitialCards();
         setCards(cardInfo);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+      } catch (err) {
+        console.error("Error fetching user data:", err);
       }
     };
     if (token) {
@@ -78,23 +65,16 @@ function App() {
     }
   }, [token]);
 
-  //
+  const handleLogOut = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem("jwt");
+    navigate("/signin");
+  };
+  const handleMenuButtonClick = () => {
+    console.log("Menu Mobile Funciona");
+    setIsMenuOpen(!isMenuOpen);
+  };
 
-  useEffect(() => {
-    // getUserInfo();
-    //getCards();
-  }, []);
-
-  // async function getCards() {
-  //   const response = await api.getInitialCards();
-
-  //   setCards(response);
-  // }
-  // async function getUserInfo() {
-  //   const response = await api.getUserInfoFronServer();
-  //   console.log(response);
-  //   setCurrentUser(response);
-  // }
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(true);
   };
@@ -114,12 +94,11 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsImagePopupOpen(false);
   }
-  // function handleUpdateUser(userData) {
-  //   api.editProfile(userData).then((newUser) => {
-  //     setCurrentUser(newUser);
-  //     closeAllPopups();
-  //   });
-  // }
+
+  function navigateToProfile() {
+    navigate("/profile");
+  }
+
   const handleUpdateUser = async (userData) => {
     try {
       const updataUser = await api.saveDataToServer(
@@ -132,15 +111,6 @@ function App() {
       console.error("Error updating user data:", err);
     }
   };
-  // const handleUpdateAvatar = async (avatar) => {
-  //   try {
-  //     const updateAvatar = await api.updateImageProfile(avatar);
-  //     setCurrentUser(updateAvatar);
-  //     closeAllPopups();
-  //   } catch (err) {
-  //     console.error("Error updating avatar pic:", err);
-  //   }
-  // };
 
   function handleUpdateAvatar(link) {
     api.updateImageProfile(link).then((newUser) => {
@@ -162,10 +132,7 @@ function App() {
       console.log(err);
     }
   };
-  const handleConfirmationClick = (card) => {
-    setSelectedCard(card);
-    //setIsConfirmacionPopupOpen(false)
-  };
+
   const handleAddCard = async (card) => {
     try {
       const addCard = await api.addNewCardToServer(card);
@@ -173,6 +140,7 @@ function App() {
       if (addCard && addCard._id) {
         setCards([addCard, ...cards]);
         closeAllPopups();
+        navigateToProfile();
       } else {
         console.error("La respuesta no contiene _id.");
       }
@@ -181,41 +149,16 @@ function App() {
     }
   };
 
-  // const handleCardDelete = async () => {
-  //   try {
-  //     await api.deleteCardFromServer(selectedCard._id);
-  //     setCards(cards.filter((card) => card._id !== selectedCard._id));
-  //     closeAllPopups();
-  //   } catch (error) {
-  //     console.error("error deleting card", error);
-  //   }
-  //   console.log(selectedCard._id);
-  // };
-
   function handleCardDelete(card) {
     api.deleteCardFromServer(card._id).then((newCard) => {
       setCards((state) => state.filter((c) => c._id !== card._id));
     });
   }
 
-  // function handleTokenCheck() {
-  //   if (localStorage.getItem("jwt")) {
-  //     const token = localStorage.getItem("jwt");
-
-  //     auth.checkToken(token).then((res) => {
-  //       if (res) {
-  //         handleLogIn();
-  //         navigate("/");
-  //         setCurrentEmail(res);
-  //         console.log(currentEmail);
-  //       }
-  //     });
-  //   }
-  // }
-
-  // React.useEffect(() => {
-  //   handleTokenCheck();
-  // }, []);
+  const handleLogIn = () => {
+    setIsLoggedIn(true);
+    navigate("/profile");
+  };
 
   return (
     <div
@@ -284,6 +227,16 @@ function App() {
                 }
               />
             </Route>
+            <Route
+              path="/"
+              element={
+                isLoggedIn ? (
+                  <Navigate to="/profile" />
+                ) : (
+                  <Navigate to="/signin" />
+                )
+              }
+            />
           </Routes>
         </CurrentUserContext.Provider>
       </div>

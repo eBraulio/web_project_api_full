@@ -7,25 +7,16 @@ import InfoTooltip from "./InfoTooltip.js";
 import escapeHTML from "escape-html";
 function Register() {
   const navigate = useNavigate();
-
   const [isSuccess, setIsSuccess] = React.useState(false);
-
   const [isFail, setIsFail] = React.useState(false);
-  //
-
   const [error, setError] = useState("");
-
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
-  //
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
-    setIsFail(false);
-
     const sanitizedValues = {
       email: escapeHTML(values.email),
       password: escapeHTML(values.password),
@@ -34,9 +25,10 @@ function Register() {
     auth
       .register(sanitizedValues)
       .then(() => {
-        navigate("/signin");
+        setIsSuccess(true);
       })
       .catch((err) => {
+        setIsFail(true);
         console.log(err);
         if (err.includes("usuario ya está registrado")) {
           setError(
@@ -47,8 +39,6 @@ function Register() {
         } else {
           setError("Ha ocurrido un error. Por favor, inténtalo de nuevo.");
         }
-        setIsFail(true);
-        setIsSuccess(true);
       });
   };
 
@@ -60,9 +50,10 @@ function Register() {
   function handleFooterText() {
     navigate("/signin");
   }
-  const handleCloseTooltip = () => {
+  function handleInfoTooltipClose() {
+    setIsFail(false);
     setIsSuccess(false);
-  };
+  }
 
   return (
     <div className="register">
@@ -115,13 +106,13 @@ function Register() {
       </div>
 
       <InfoTooltip
-        // isFail={isFail}
-        // isSuccess={isSuccess}
-        // onClose={handleInfoTooltipClose}
-        isOpen={isSuccess}
-        onClose={handleCloseTooltip}
-        isError={isFail}
-        message={error}
+        isFail={isFail}
+        isSuccess={isSuccess}
+        onClose={handleInfoTooltipClose}
+        // isOpen={isSuccess}
+        // onClose={handleCloseTooltip}
+        // isError={isFail}
+        // message={error}
       />
     </div>
   );

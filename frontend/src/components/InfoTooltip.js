@@ -2,7 +2,12 @@ import React from "react";
 import SuccessImage from "../images/success.png";
 import FailImage from "../images/fail.png";
 import closeButton from "../images/vector/close-icon.svg";
+
+//||
+
 function InfoTooltip({ isSuccess, isFail, onClose }) {
+  console.log(isSuccess);
+  console.log(isFail);
   return (
     <>
       {isSuccess && (

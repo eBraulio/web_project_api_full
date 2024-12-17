@@ -13,7 +13,6 @@ export default function Main({
   onCardDelete,
 }) {
   const currentUser = useContext(CurrentUserContext);
-  //console.log(url);
 
   return (
     <main className="content">

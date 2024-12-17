@@ -1,18 +1,21 @@
 import React from "react";
+import { useContext } from "react";
 import headerLogo from "../images/vector/header__logo.svg";
 import MenuImage from "../images/Menu.png";
 import closeButton from "../images/vector/close-icon.svg";
 import { CurrentUserEmailContext } from "../context/CurrentUserEmailContext.js";
+import CurrentUserContext from "../context/CurrentUserContext";
 
 export default function Header({ onMenuClick, isOpen, handleLogOut }) {
-  const currentUserEmail = React.useContext(CurrentUserEmailContext);
+  const currentUser = useContext(CurrentUserContext);
+
   return (
     <header className="header">
       {isOpen ? (
         <div className="header__mobile-login">
           <p className="header__mobile-email">
-            {typeof currentUserEmail === "string"
-              ? currentUserEmail
+            {typeof currentUser.email === "string"
+              ? currentUser.email
               : `email@mail.com`}
           </p>
           <p className="header__mobile-signout" onClick={handleLogOut}>
@@ -44,8 +47,8 @@ export default function Header({ onMenuClick, isOpen, handleLogOut }) {
 
         <div className="header__login">
           <p className="header__email">
-            {typeof currentUserEmail === "string"
-              ? currentUserEmail
+            {typeof currentUser.email === "string"
+              ? currentUser.email
               : `email@mail.com`}
           </p>
           <p className="header__signout" onClick={handleLogOut}>

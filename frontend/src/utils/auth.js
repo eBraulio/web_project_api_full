@@ -42,7 +42,7 @@ export const authorize = (password, email) => {
       if (!response.ok) {
         if (response.status === 401) {
           return Promise.reject(
-            "No se ha encontrado al usuario con el correo electrónico especificado"
+            "Usuario o contraseña no correcta, o usuario ya registrado"
           );
         } else if (response.status === 400) {
           return Promise.reject(

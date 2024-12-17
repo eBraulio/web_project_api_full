@@ -1,20 +1,18 @@
 import React, { useRef } from "react";
 import PopupWithForm from "./PopupWithForm";
 
-function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
-  const avatar = useRef();
-  function handleSubmit(e) {
-    e.preventDefault();
+function EditAvatarPopup(props) {
+  const AvatarRef = useRef();
 
-    onUpdateAvatar({
-      avatar: avatar.current.value,
-    });
-  }
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    props.onUpdateAvatar(AvatarRef.current.value);
+  };
 
   return (
     <PopupWithForm
-      isOpen={isOpen}
-      onClose={onClose}
+      isOpen={props.isOpen}
+      onClose={props.onClose}
       title="Cambiar foto de perfil"
       name="avatar"
       buttonText="Guardar"
@@ -26,7 +24,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
         id="popup__avatar-image"
         name="avatarLink"
         placeholder="Enlace a la imagen"
-        ref={avatar || ""}
+        ref={AvatarRef || ""}
         required
       />
       <span
