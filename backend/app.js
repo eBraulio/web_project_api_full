@@ -13,28 +13,48 @@ const authRouter = require('./routes/auth');
 const auth = require('./middleware/auth');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
-// conección a MongoDB
+// Mongoose
 mongoose.connect('mongodb://localhost:27017/aroundb', {});
 
 const app = express();
 console.log(process.env.NODE_ENV); // producción
 
-// Middleware
-//app.use(cors({ origin: 'https://p18.ignorelist.com' }));
-//app.options('*',cors());
+// Enable CORS
+// const allowedOrigins = [
+//   'http://ebraulio.chickenkiller.com',
+//   'http://www.ebraulio.chickenkiller.com',
+//   'https://ebraulio.chickenkiller.com',
+//   'https://www.ebraulio.chickenkiller.com',
+//   'http://localhost:3000',
+//   'https://localhost:3000',
+// ];
+
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//     if (allowedOrigins.includes(origin) || !origin) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('No permitido por CORS'));
+//     }
+//   },
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+//   credentials: true,
+// };
+// app.use(cors(corsOptions));
+// app.use(express.json());
+
 app.use(cors());
+app.options('*', cors());
 app.use(express.json());
-//registrador de solicitudes
+
 app.use(requestLogger);
+app.use(errorLogger);
 
 app.use('/auth', authRouter);
 
-//controladores de rutas
+//Route controllers
 app.use('/users', auth, usersRouter);
 app.use('/cards', auth, cardsRouter);
-
-//resgistrador de errores
-app.use(errorLogger);
 
 app.use((req, res) => {
   res
@@ -45,7 +65,7 @@ app.use((req, res) => {
 app.use(errors());
 app.use(errorHandler);
 
-//Inicializar el servidor
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`App listening at port ${PORT}`);
+//Start API
+app.listen(PORT, () => {
+  console.log(`Cool! The server is listening in the port ${PORT}`);
 });

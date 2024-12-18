@@ -1,7 +1,6 @@
 const express = require('express');
-
+require('dotenv').config();
 const router = express.Router();
-//const auth = require('../middlewares/auth');
 const { celebrate } = require('celebrate');
 const {
   getUsers,
@@ -15,20 +14,16 @@ const {
   updateAvatarSchema,
 } = require('../validation/schemas');
 
-//Middleware de autorizacion
-// router.use(auth);
-
-//Rutas protegidas
-//Obtener datos del usuario actual
+//Gets info from current User
 router.get('/me', getCurrentUser);
-//Obtener un usuario por id
+//Gets user by id
 router.get('/:id', getUserById);
-//Obtener todos los usuarios
+//Gets all the users
 router.get('/', getUsers);
 
-//Actualizar usuario
+//Updates users
 router.patch('/me', celebrate(updateProfileSchema), updateUserProfile);
-//Actualizar avatar
+//Updates avatar
 router.patch('/me/avatar', celebrate(updateAvatarSchema), updateUserAvatar);
 
 module.exports = router;

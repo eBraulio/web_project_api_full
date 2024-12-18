@@ -8,7 +8,7 @@ const validateURL = (value, helpers) => {
   return helpers.error('string.uri');
 };
 
-// Esquemas de validación para users
+// Users validation
 const signupSchema = {
   body: Joi.object({
     email: Joi.string().required().email(),
@@ -36,7 +36,7 @@ const updateAvatarSchema = {
   }),
 };
 
-// Esquemas de validación para cards
+// Cards validation
 const createCardSchema = {
   body: Joi.object({
     name: Joi.string().min(2).max(30).required(),

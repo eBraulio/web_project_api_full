@@ -6,8 +6,6 @@ import closeButton from "../images/vector/close-icon.svg";
 //||
 
 function InfoTooltip({ isSuccess, isFail, onClose }) {
-  console.log(isSuccess);
-  console.log(isFail);
   return (
     <>
       {isSuccess && (

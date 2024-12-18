@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 const { HttpStatus, HttpResponseMessage } = require('../enums/http');
-
+require('dotenv').config();
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
-  //Obtener el token de los encabezados de la solicitud
+  //Gets token from headers
   const token = req.headers.authorization
     ? req.headers.authorization.replace('Bearer ', '')
     : null;
@@ -18,18 +18,18 @@ module.exports = (req, res, next) => {
   let payload;
 
   try {
-    //Verificar el token usando el JWT secreto
+    //Verifies Token using JWT_SECRET
     payload = jwt.verify(
       token,
-      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret'
+      NODE_ENV === 'production' ? JWT_SECRET : 'secretWord'
     );
   } catch (err) {
     return res
       .status(HttpStatus.FORBIDDEN)
       .send({ message: HttpResponseMessage.FORBIDDEN });
   }
-  // Añadir el payload del token verificado al objeto de solicitud
+  //Adds verified token to request
   req.user = payload;
-  //Continuar al siguiente middleware
+  //Goes to next Middleware
   return next();
 };

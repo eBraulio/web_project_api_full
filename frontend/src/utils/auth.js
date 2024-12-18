@@ -1,5 +1,5 @@
-//export const BASE_URL = "https://se-register-api.en.tripleten-services.com/v1";
-export const BASE_URL = "http://localhost:3000";
+export const BASE_URL =
+  process.env.REACT_APP_BASE_URL || "http://localhost:3000";
 
 export const register = ({ password, email }) => {
   return fetch(`${BASE_URL}/auth/signup`, {
@@ -13,11 +13,9 @@ export const register = ({ password, email }) => {
     .then((res) => {
       if (!res.ok) {
         if (res.status === 500) {
-          return Promise.reject("Este usuario ya está registrado.");
+          return Promise.reject("User already registered.");
         } else if (res.status === 400) {
-          return Promise.reject(
-            "Uno de los campos se rellenó de forma incorrecta."
-          );
+          return Promise.reject("One of the inputs is incorrect.");
         } else {
           return Promise.reject(`Error: ${res.statusText}`);
         }
@@ -41,13 +39,9 @@ export const authorize = (password, email) => {
     .then((response) => {
       if (!response.ok) {
         if (response.status === 401) {
-          return Promise.reject(
-            "Usuario o contraseña no correcta, o usuario ya registrado"
-          );
+          return Promise.reject("User or password is incorrect");
         } else if (response.status === 400) {
-          return Promise.reject(
-            "Uno de los campos se rellenó de forma incorrecta."
-          );
+          return Promise.reject("One of the inputs is incorrect.");
         } else {
           return Promise.reject(`Error: ${response.statusText}`);
         }
@@ -59,12 +53,12 @@ export const authorize = (password, email) => {
         console.log("Token JWT recibido:", data.token);
         localStorage.setItem("jwt", data.token);
         console.log(
-          "Token almacenado en localStorage:",
+          "Token was saved to localStorage:",
           localStorage.getItem("jwt")
         );
         return data;
       } else {
-        throw new Error("No se recibio ningún token JWT");
+        throw new Error("No token JWT was received");
       }
     })
     .catch((err) => {
@@ -85,10 +79,10 @@ export const checkToken = (token) => {
       if (!res.ok) {
         if (res.status === 400) {
           return Promise.reject(
-            "Token no proporcionado o proporcionado en el formato incorrecto"
+            "Token was not provided or has incorrect format"
           );
         } else if (res.status === 401) {
-          return Promise.reject("El token provisto es inválido");
+          return Promise.reject("Token is valid!");
         } else {
           return Promise.reject(`Error: ${res.statusText}`);
         }

@@ -1,4 +1,3 @@
-//only KS
 const express = require('express');
 const { celebrate } = require('celebrate');
 const { signupSchema, loginSchema } = require('../validation/schemas');

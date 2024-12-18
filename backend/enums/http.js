@@ -1,4 +1,4 @@
-//only ks
+// Definición de códigos de error
 const HttpStatus = Object.freeze({
   OK: 200,
   CREATED: 201,
@@ -10,13 +10,13 @@ const HttpStatus = Object.freeze({
 });
 
 const HttpResponseMessage = Object.freeze({
-  SUCCESS: 'Exito',
-  CREATED: 'Recurso creado con éxito',
-  BAD_REQUEST: 'Datos invalidos',
-  UNAUTHORIZED: 'Acceso no autorizado',
-  FORBIDDEN: 'Acceso prohibido',
-  NOT_FOUND: 'Recurso no encontrado',
-  SERVER_ERROR: 'Error predeterminado',
+  SUCCESS: '_Success',
+  CREATED: '_Items successfully created',
+  BAD_REQUEST: '_Invalid data',
+  UNAUTHORIZED: '_Unauthorized access',
+  FORBIDDEN: '_Prohibited access',
+  NOT_FOUND: '_Item wad not found',
+  SERVER_ERROR: '_Unexpected error',
 });
 
 module.exports = {

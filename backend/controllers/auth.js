@@ -1,9 +1,8 @@
-//only ks
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { HttpStatus, HttpResponseMessage } = require('../enums/http');
-
+require('dotenv').config();
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.createUser = (req, res, next) => {
@@ -51,7 +50,7 @@ module.exports.login = (req, res, next) => {
         }
         const token = jwt.sign(
           { _id: user._id },
-          NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+          NODE_ENV === 'production' ? JWT_SECRET : 'secretWord',
           { expiresIn: '7d' }
         );
         return res.send({ token });

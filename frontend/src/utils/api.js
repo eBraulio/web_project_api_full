@@ -127,8 +127,12 @@ class Api {
   }
 }
 
+export const BASE_URL =
+  process.env.REACT_APP_BASE_URL || "http://localhost:3000";
+//export const BASE_URL = "http://localhost:3000";
+
 const api = new Api({
-  address: "http://localhost:3000",
+  address: `${BASE_URL}`,
   token: localStorage.getItem("jwt") || process.env.TOKEN || "",
 });
 

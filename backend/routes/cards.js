@@ -1,5 +1,5 @@
 const express = require('express');
-
+require('dotenv').config();
 const router = express.Router();
 const { celebrate } = require('celebrate');
 const {
@@ -11,22 +11,19 @@ const {
 } = require('../controllers/cards');
 const { createCardSchema, cardIdSchema } = require('../validation/schemas');
 
-// const auth = require('../middlewares/auth');
-// router.use(auth);
-
-// Obtener todas las tarjetas
+// Gets all the Cards
 router.get('/', getCards);
 
-// Crear targetas
+// Create card
 router.post('/', celebrate(createCardSchema), createCard);
 
-// Borrar targetas
+// Delete card
 router.delete('/:cardId', celebrate(cardIdSchema), deleteCard);
 
-// Dar like
+// Give like
 router.put('/likes/:cardId', celebrate(cardIdSchema), likeCard);
 
-// Quitar like
+// Remove like
 router.delete('/likes/:cardId', celebrate(cardIdSchema), dislikeCard);
 
 module.exports = router;
