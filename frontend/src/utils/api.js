@@ -127,26 +127,15 @@ class Api {
   }
 }
 
+// export const BASE_URL =
+// process.env.REACT_APP_BASE_URL || "https://api.ebraulio.chickenkiller.com";
+
 export const BASE_URL =
   process.env.REACT_APP_BASE_URL || "http://localhost:3000";
-//export const BASE_URL = "http://localhost:3000";
 
 const api = new Api({
   address: `${BASE_URL}`,
   token: localStorage.getItem("jwt") || process.env.TOKEN || "",
 });
-
-// const api = new Api({
-//   baseUrl: "https://around.nomoreparties.co/v1/web_es_11/",
-//   headers: {
-//     authorization: "6bb9691a-4f67-46d0-9c5a-49bb45cb7185",
-//     "Content-Type": "application/json",
-//   },
-//   // baseUrl: "http://localhost:3000",
-//   // headers: {
-//   //   "Content-Type": "application/json",
-//   //   authorization: `Bearer ${token}`,
-//   // },
-// });
 
 export default api;

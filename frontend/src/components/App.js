@@ -42,7 +42,7 @@ function App() {
             setToken(jwt);
             setIsLoggedIn(true);
             fetchData();
-            navigate("/profile");
+            navigate("/");
           }
         });
       }
@@ -56,6 +56,7 @@ function App() {
 
         const cardInfo = await api.getInitialCards();
         setCards(cardInfo);
+        navigate("/");
       } catch (err) {
         console.error("Error fetching user data:", err);
       }
@@ -64,6 +65,19 @@ function App() {
       fetchData();
     }
   }, [token]);
+
+  React.useEffect(() => {
+    getUserInfo();
+    getCards();
+  }, []);
+
+  async function getCards() {
+    const response = await api.getInitialCards();
+    setCards(response);
+  }
+  async function getUserInfo() {
+    navigateToProfile();
+  }
 
   const handleLogOut = () => {
     setIsLoggedIn(false);
@@ -96,7 +110,7 @@ function App() {
   }
 
   function navigateToProfile() {
-    navigate("/profile");
+    navigate("/");
   }
 
   const handleUpdateUser = async (userData) => {
@@ -135,15 +149,12 @@ function App() {
 
   const handleAddCard = async (card) => {
     try {
-      const addCard = await api.addNewCardToServer(card);
-      console.log("Respuesta del servidor:", addCard);
-      if (addCard && addCard._id) {
-        setCards([addCard, ...cards]);
+      api.addNewCardToServer(card).then((card) => {
+        console.log("Card has been added:", card);
+        setCards([card, ...cards]);
         closeAllPopups();
-        navigateToProfile();
-      } else {
-        console.error("La respuesta no contiene _id.");
-      }
+        navigate("/");
+      });
     } catch (err) {
       console.error("Error updating new card:", err);
     }
@@ -157,7 +168,7 @@ function App() {
 
   const handleLogIn = () => {
     setIsLoggedIn(true);
-    navigate("/profile");
+    navigate("/");
   };
 
   return (
@@ -227,16 +238,6 @@ function App() {
                 }
               />
             </Route>
-            <Route
-              path="/"
-              element={
-                isLoggedIn ? (
-                  <Navigate to="/profile" />
-                ) : (
-                  <Navigate to="/signin" />
-                )
-              }
-            />
           </Routes>
         </CurrentUserContext.Provider>
       </div>

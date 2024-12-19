@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
           /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]*)?$/;
         return urlRegex.test(v);
       },
-      message: (props) => `${props.value} no es una URL válida!`,
+      message: (props) => `${props.value} is not a valid URL!`,
     },
   },
   email: {

@@ -15,7 +15,7 @@ const {
 } = require('../validation/schemas');
 
 //Gets info from current User
-router.get('/me', getCurrentUser);
+router.get('/me', getCurrentUser); //   /me
 //Gets user by id
 router.get('/:id', getUserById);
 //Gets all the users

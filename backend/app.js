@@ -28,19 +28,7 @@ console.log(process.env.NODE_ENV); // producción
 //   'http://localhost:3000',
 //   'https://localhost:3000',
 // ];
-
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     if (allowedOrigins.includes(origin) || !origin) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('No permitido por CORS'));
-//     }
-//   },
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-//   credentials: true,
-// };
-// app.use(cors(corsOptions));
+// app.use(cors(allowedOrigins));
 // app.use(express.json());
 
 app.use(cors());
@@ -50,6 +38,14 @@ app.use(express.json());
 app.use(requestLogger);
 app.use(errorLogger);
 
+//Crash test
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('El servidor va a caer');
+  }, 0);
+});
+
+//Routes signin and signup
 app.use('/auth', authRouter);
 
 //Route controllers
