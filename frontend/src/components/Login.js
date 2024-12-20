@@ -28,7 +28,7 @@ function Login({ handleLogIn, setCurrentEmail }) {
           setEmail("");
           setPassword("");
           handleLogIn();
-          navigate("/");
+          //navigate("/");
         }
       })
       .catch((err) => console.log(err));

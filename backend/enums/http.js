@@ -6,6 +6,7 @@ const HttpStatus = Object.freeze({
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
+  ALREADY_EXISTS: 409,
   INTERNAL_SERVER_ERROR: 500,
 });
 
@@ -15,8 +16,9 @@ const HttpResponseMessage = Object.freeze({
   BAD_REQUEST: '_Invalid data',
   UNAUTHORIZED: '_Unauthorized access',
   FORBIDDEN: '_Prohibited access',
-  NOT_FOUND: '_Item wad not found',
-  SERVER_ERROR: '_Unexpected error',
+  NOT_FOUND: '_User wad not found with this Id',
+  ALREADY_EXISTS: '_Email has already been registered',
+  SERVER_ERROR: '_An error has ocurred on the server',
 });
 
 module.exports = {

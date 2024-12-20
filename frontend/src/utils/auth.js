@@ -53,7 +53,7 @@ export const authorize = (password, email) => {
     })
     .then((data) => {
       if (data.token) {
-        console.log("Token JWT recibido:", data.token);
+        console.log("Token JWT received is:", data.token);
         localStorage.setItem("jwt", data.token);
         console.log(
           "Token was saved to localStorage:",

@@ -20,19 +20,20 @@ const app = express();
 console.log(process.env.NODE_ENV); // producción
 
 // Enable CORS
-// const allowedOrigins = [
-//   'http://ebraulio.chickenkiller.com',
-//   'http://www.ebraulio.chickenkiller.com',
-//   'https://ebraulio.chickenkiller.com',
-//   'https://www.ebraulio.chickenkiller.com',
-//   'http://localhost:3000',
-//   'https://localhost:3000',
-// ];
-// app.use(cors(allowedOrigins));
-// app.use(express.json());
+const allowedOrigins = {
+  origin: [
+    'http://ebraulio.chickenkiller.com',
+    'http://www.ebraulio.chickenkiller.com',
+    'https://ebraulio.chickenkiller.com',
+    'https://www.ebraulio.chickenkiller.com',
+    'http://localhost:3000',
+    'http://localhost:3001',
+  ],
+};
+app.use(cors(allowedOrigins));
 
-app.use(cors());
-app.options('*', cors());
+//app.use(cors());
+//app.options('*', cors());
 app.use(express.json());
 
 app.use(requestLogger);

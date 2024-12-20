@@ -41,14 +41,16 @@ function App() {
           if (res) {
             setToken(jwt);
             setIsLoggedIn(true);
-            fetchData();
-            navigate("/");
+            //fetchData();
+            //navigate("/");
           }
         });
       }
     };
-
     HandleTokenCheck();
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const userData = await api.getUserInfoFronServer();
@@ -61,15 +63,15 @@ function App() {
         console.error("Error fetching user data:", err);
       }
     };
-    if (token) {
+    if (isLoggedIn) {
       fetchData();
     }
-  }, [token]);
+  }, [isLoggedIn]);
 
-  React.useEffect(() => {
-    getUserInfo();
-    getCards();
-  }, []);
+  // React.useEffect(() => {
+  //   getUserInfo();
+  //   getCards();
+  // }, []);
 
   async function getCards() {
     const response = await api.getInitialCards();
@@ -83,6 +85,7 @@ function App() {
     setIsLoggedIn(false);
     localStorage.removeItem("jwt");
     navigate("/signin");
+    setCurrentUser({});
   };
   const handleMenuButtonClick = () => {
     console.log("Menu Mobile Funciona");

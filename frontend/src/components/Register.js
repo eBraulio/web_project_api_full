@@ -87,7 +87,7 @@ function Register() {
             id="password"
             placeholder="Contraseña"
             required
-            minlength="8"
+            minLength="8"
             type="password"
             value={values.password}
             name="password"

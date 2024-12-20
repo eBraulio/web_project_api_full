@@ -12,8 +12,12 @@ module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   Cards.create({ name, link, owner: req.user._id })
     .then((card) => {
-      console.log('Carta creada:', card);
-      res.status(HttpStatus.CREATED).send(card);
+      Cards.findById(card._id)
+        .populate('owner')
+        .then((cardFull) => {
+          console.log('Carta creada:', cardFull);
+          res.status(HttpStatus.CREATED).send(cardFull);
+        });
     })
     .catch((err) => {
       const newError = err;
