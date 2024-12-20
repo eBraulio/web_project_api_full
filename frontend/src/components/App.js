@@ -20,7 +20,7 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = React.useState(""); //""
+  const [selectedCard, setSelectedCard] = React.useState("");
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
   const [currentUser, setCurrentUser] = React.useState({});
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
@@ -29,13 +29,11 @@ function App() {
   const [token, setToken] = React.useState(localStorage.getItem("jwt") || "");
   const navigate = useNavigate();
 
-  //use effect
-
   useEffect(() => {
     const HandleTokenCheck = () => {
       const jwt = localStorage.getItem("jwt");
       if (jwt) {
-        console.log("Renderizando profile");
+        console.log("Rendering profile");
 
         auth.checkToken(jwt).then((res) => {
           if (res) {
@@ -68,19 +66,6 @@ function App() {
     }
   }, [isLoggedIn]);
 
-  // React.useEffect(() => {
-  //   getUserInfo();
-  //   getCards();
-  // }, []);
-
-  async function getCards() {
-    const response = await api.getInitialCards();
-    setCards(response);
-  }
-  async function getUserInfo() {
-    navigateToProfile();
-  }
-
   const handleLogOut = () => {
     setIsLoggedIn(false);
     localStorage.removeItem("jwt");
@@ -110,10 +95,6 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsImagePopupOpen(false);
-  }
-
-  function navigateToProfile() {
-    navigate("/");
   }
 
   const handleUpdateUser = async (userData) => {

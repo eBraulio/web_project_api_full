@@ -15,7 +15,7 @@ module.exports.createCard = (req, res, next) => {
       Cards.findById(card._id)
         .populate('owner')
         .then((cardFull) => {
-          console.log('Carta creada:', cardFull);
+          console.log('Card created:', cardFull);
           res.status(HttpStatus.CREATED).send(cardFull);
         });
     })
@@ -46,7 +46,7 @@ module.exports.deleteCard = (req, res, next) => {
       }
 
       return Cards.findByIdAndDelete(req.params.cardId).then(() =>
-        res.send({ message: 'Tarjeta eliminada' })
+        res.send({ message: 'Card removed' })
       );
     })
     .catch(next);

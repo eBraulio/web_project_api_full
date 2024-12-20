@@ -62,7 +62,7 @@ app.use((req, res) => {
 app.use(errors());
 app.use(errorHandler);
 
-//Start API
+//Starts API
 app.listen(PORT, () => {
-  console.log(`Cool! The server is listening in the port ${PORT}`);
+  console.log(`Cool! The server is listening at the port ${PORT}`);
 });

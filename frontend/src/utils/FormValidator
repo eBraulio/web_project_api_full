@@ -1,5 +1,3 @@
-//only KS
-
 export default class FormValidator {
   constructor(setting, formElement) {
     this._inputSelector = setting.inputSelector;

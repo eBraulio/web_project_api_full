@@ -1,4 +1,4 @@
-// Definición de códigos de error
+// Enumeration of Errors
 const HttpStatus = Object.freeze({
   OK: 200,
   CREATED: 201,

@@ -109,10 +109,6 @@ function Register() {
         isFail={isFail}
         isSuccess={isSuccess}
         onClose={handleInfoTooltipClose}
-        // isOpen={isSuccess}
-        // onClose={handleCloseTooltip}
-        // isError={isFail}
-        // message={error}
       />
     </div>
   );

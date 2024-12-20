@@ -20,7 +20,6 @@ export default function Card({
 
   const cardDeleteButtonClassName = ` ${
     isOwn ? "element__trash-icon" : "element__trash-icon-hidden"
-    //isOwn ? "element__trash-icon-hidden" : "element__trash-icon"
   }`;
   const isLiked = likes.some((like) => like === currentUser._id);
 
@@ -57,9 +56,6 @@ export default function Card({
         <div className="element__container">
           <div
             className={cardLikeButtonClassName}
-            // className={`${
-            //   isLiked ? "element__like-button-active" : "element__like-button"
-            // }`}
             onClick={handleLikeClick}
           ></div>
           <span className="element__like-number">{likes.length}</span>
