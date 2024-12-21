@@ -4,6 +4,14 @@ Es una página montada en una servidor de Google Cloud, vinculada a un dominio g
 
 La página contempla el despliegue de tanto el Front end como de Back end.
 
+![image](https://github.com/user-attachments/assets/4dc79c0c-1d9e-469d-83a8-5380cdd8a7f3)
+
+# URLs
+
+- URL frontend: https://www.ebraulio.chickenkiller.com/
+- URL api: https://api.ebraulio.chickenkiller.com/
+
+  
 # Front end
 
 Esta oarte del proyectose enfoca el registro y la autorización en el frontend del proyecto de React "Alrededor de los EE.UU."
@@ -61,7 +69,3 @@ Esta parte del proyecto se enfoca crear una API RESTful para la página del proy
 - pm2
 - Nginx
 
-# URLs
-
-- URL frontend: https://www.ebraulio.chickenkiller.com/
-- URL api: https://api.ebraulio.chickenkiller.com/
