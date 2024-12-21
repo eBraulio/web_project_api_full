@@ -25,7 +25,10 @@ Esta oarte del proyectose enfoca el registro y la autorización en el frontend d
 - Routes/rutas
 - Figma
 - Github
--
+- Variable de entorno
+- Validator/Clebrate/Joi
+- Error Logger
+- Request Logger
 
 # Back end
 
@@ -42,16 +45,23 @@ Esta parte del proyecto se enfoca crear una API RESTful para la página del proy
 - Implementación de funciones y rutas para actualizar perfil, actualizar avatar, dar Like/Dislike a una tarjeta.
 - Tecnologías:
 
-  \*La página web esta diseñada con las siguientes tecnologías:
+\*La página web esta diseñada con las siguientes tecnologías:
 
-- Node.js
+- React.js
 - Express.js
 - Middlewares
 - Eslit
 - Routes/rutas
 - CORS
+- .ENV
+- API desplegadada en Google Cloud
+- FreeDNS
+- SSL
+- Password/hash
+- pm2
+- Nginx
 
 # URLs
 
--URL frontend: https://www.ebraulio.chickenkiller.com/
--URL api: https://api.ebraulio.chickenkiller.com/
+- URL frontend: https://www.ebraulio.chickenkiller.com/
+- URL api: https://api.ebraulio.chickenkiller.com/
