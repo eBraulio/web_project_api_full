@@ -2,7 +2,7 @@
 
 Es una página montada en una servidor de Google Cloud, vinculada a un dominio gratuito de FreeDNS.
 
-La página contempla el despliegue de tanto el Front end como de Back end.
+La página contempla el despliegue de tanto del Front end como del Back end.
 
 ![image](https://github.com/user-attachments/assets/4dc79c0c-1d9e-469d-83a8-5380cdd8a7f3)
 
@@ -14,7 +14,7 @@ La página contempla el despliegue de tanto el Front end como de Back end.
   
 # Front end
 
-Esta oarte del proyectose enfoca el registro y la autorización en el frontend del proyecto de React "Alrededor de los EE.UU."
+Esta parte del proyecto se enfoca en el registro y la autorización en el frontend del proyecto de React "Alrededor de los EE.UU."
 
 \*La página tiene las siguientes funcionalidades:
 
@@ -24,11 +24,11 @@ Esta oarte del proyectose enfoca el registro y la autorización en el frontend d
 - Nuevos Endpoints: /singup y /singin
 - Implementar la autenticación del usuario
 - Implementar el almacenamiento local y la manipulación de tokens
-- Analizar tu sitio con base en lo que ya sabes sobre seguridad
+- Agregar CORS para evitar XSS
 
 \*La página web esta diseñada con las siguientes tecnologías:
 
-- Node.js
+- React.js
 - Eslit
 - Routes/rutas
 - Figma
@@ -48,14 +48,14 @@ Esta parte del proyecto se enfoca crear una API RESTful para la página del proy
 - Crear esquemas y modelos para Users y Cards.
 - Utilización de expresiones para validar los datos introducidos en los campos de URL.
 - Creación de controladores y rutas para usuarios y tarjetas.
-- La autorización se lleva a cabo a través de un campo fijo Owner (solución temporal).
 - Manejo de errores con códigos 400, 404, y 500.
 - Implementación de funciones y rutas para actualizar perfil, actualizar avatar, dar Like/Dislike a una tarjeta.
 - Tecnologías:
 
 \*La página web esta diseñada con las siguientes tecnologías:
 
-- React.js
+
+- Node.js
 - Express.js
 - Middlewares
 - Eslit
